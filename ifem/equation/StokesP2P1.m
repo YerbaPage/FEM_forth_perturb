@@ -6,7 +6,7 @@ function [soln,eqn,info] = StokesP2P1(node,elem,bdFlag,pde,option)
 % 
 %       -div(mu*grad u) + grad p = f in \Omega,
 %                        - div u = 0  in \Omega,
-%   with 
+%   with
 %       Dirichlet boundary condition        u = g_D  on \Gamma_D, 
 %       Neumann boundary condition du/dn - np = g_N  on \Gamma_N.
 %
