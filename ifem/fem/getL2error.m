@@ -103,7 +103,7 @@ switch Nu
         elem2dof = dofP3(elem);           
 end
 nQuad = size(lambda,1);
-for p = 1:nQuad
+for p = 1:nQuad 
     % evaluate uh at quadrature point
     switch Nu
         case NT   % P0 piecewise constant function
