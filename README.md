@@ -1,2 +1,4 @@
 # FEM
-Codes by a noob in finite element method.
+Codes for studying finite element method.
+
+including packages : @distmesh @ifem @skfem
