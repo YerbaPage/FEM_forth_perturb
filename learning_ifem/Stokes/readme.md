@@ -40,4 +40,4 @@ $ \mathrm{M}=\mathrm{L}_{0}^{2}(\Omega)=\left\{\mathrm{q} \in \mathrm{L}^{2}(\Om
 
 
 
-See: https://kinnala.github.io/scikit-fem-docs/examples/ex18.html
+> copied from https://kinnala.github.io/scikit-fem-docs/examples/ex18.html
