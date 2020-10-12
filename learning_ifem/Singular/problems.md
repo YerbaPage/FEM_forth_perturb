@@ -1,0 +1,5 @@
+- 求解器收敛性
+- 混合元逻辑
+- 具体求解方程组构建
+- morley for poisson 
+- examples to use
