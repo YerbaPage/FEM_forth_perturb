@@ -390,7 +390,7 @@ u=\partial_{n} u=0 & \text { on } \partial \Omega
 \]
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{2}{\boxspacing}
+\prompt{In}{incolor}{1}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k+kn}{from} \PY{n+nn}{skfem} \PY{k+kn}{import} \PY{o}{*}
 \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
@@ -404,6 +404,10 @@ u=\partial_{n} u=0 & \text { on } \partial \Omega
 \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
 \PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits}\PY{n+nn}{.}\PY{n+nn}{mplot3d} \PY{k+kn}{import} \PY{n}{Axes3D}
 \PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{figure.dpi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100}
+
+\PY{n}{pi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi}
+\PY{n}{sin} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}
+\PY{n}{cos} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{cos}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -427,8 +431,10 @@ u\left(x_{1}, x_{2}\right)=\left(\sin \left(\pi x_{1}\right) \sin \left(\pi x_{2
 mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilon-and-generating-mesh}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{36}{\boxspacing}
+\prompt{In}{incolor}{44}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{0}
+
 \PY{n}{m} \PY{o}{=} \PY{n}{MeshTri}\PY{o}{.}\PY{n}{init\PYZus{}symmetric}\PY{p}{(}\PY{p}{)}
 \PY{c+c1}{\PYZsh{} m = MeshTri()}
 \PY{n}{m}\PY{o}{.}\PY{n}{refine}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
@@ -436,28 +442,22 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \PY{n}{basis} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{variable}\PY{p}{:} \PY{n}{InteriorBasis}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{e}\PY{p}{,} \PY{n}{intorder}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
     \PY{k}{for} \PY{n}{variable}\PY{p}{,} \PY{n}{e} \PY{o+ow}{in} \PY{n}{element}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} intorder: integration order for quadrature}
 
-\PY{c+c1}{\PYZsh{} draw(m)}
-\PY{c+c1}{\PYZsh{} plt.show()}
+\PY{n}{draw}\PY{p}{(}\PY{n}{m}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-    \subsubsection{\texorpdfstring{Exact \(u\)}{Exact u}}\label{exact-u}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{37}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{def} \PY{n+nf}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-    \PY{k}{return} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
-\end{Verbatim}
-\end{tcolorbox}
-
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_6_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
     \subsubsection{\texorpdfstring{Forms for
 \(\left(\nabla w_{h}, \nabla \chi_{h}\right)=\left(f, \chi_{h}\right)\)}{Forms for \textbackslash{}left(\textbackslash{}nabla w\_\{h\}, \textbackslash{}nabla \textbackslash{}chi\_\{h\}\textbackslash{}right)=\textbackslash{}left(f, \textbackslash{}chi\_\{h\}\textbackslash{}right)}}\label{forms-for-leftnabla-w_h-nabla-chi_hrightleftf-chi_hright}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{59}{\boxspacing}
+\prompt{In}{incolor}{46}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{0}
 \PY{n+nd}{@BilinearForm}
 \PY{k}{def} \PY{n+nf}{laplace}\PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{:}
     \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
@@ -471,10 +471,10 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
     \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
 \PY{l+s+sd}{    for \PYZdl{}(f, x\PYZus{}\PYZob{}h\PYZcb{})\PYZdl{}}
 \PY{l+s+sd}{    \PYZsq{}\PYZsq{}\PYZsq{}}
-    \PY{n}{pix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-    \PY{n}{piy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
-    \PY{n}{llu} \PY{o}{=} \PY{o}{\PYZhy{}} \PY{l+m+mi}{8} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{p}{)}
+    \PY{n}{pix} \PY{o}{=} \PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+    \PY{n}{piy} \PY{o}{=} \PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{+} \PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+    \PY{n}{llu} \PY{o}{=} \PY{o}{\PYZhy{}} \PY{l+m+mi}{8} \PY{o}{*} \PY{p}{(}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4} \PY{o}{*} \PY{p}{(}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{p}{)}
     \PY{k}{return} \PY{p}{(}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{llu} \PY{o}{\PYZhy{}} \PY{n}{lu}\PY{p}{)} \PY{o}{*} \PY{n}{v}
 \end{Verbatim}
 \end{tcolorbox}
@@ -483,7 +483,7 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \(w_{h}\)}{Solving w\_\{h\}}}\label{solving-w_h}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{60}{\boxspacing}
+\prompt{In}{incolor}{47}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{o}{\PYZpc{}\PYZpc{}time}
 
@@ -495,63 +495,9 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-build\_pc\_diag(A) enabled
-Wall time: 23.8 ms
+Wall time: 19.9 ms
     \end{Verbatim}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{61}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{def} \PY{n+nf}{exact\PYZus{}w}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
-    \PY{n}{pix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{x}
-    \PY{n}{piy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{y}
-    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
-    \PY{n}{u} \PY{o}{=} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
-    \PY{k}{return} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{lu} \PY{o}{\PYZhy{}} \PY{n}{u}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{62}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{wh}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{63}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{w} \PY{o}{=} \PY{n}{exact\PYZus{}w}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
-
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{64}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w} \PY{o}{\PYZhy{}} \PY{n}{wh}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
     \subsubsection{\texorpdfstring{Forms for
 \(\varepsilon^{2} a_{h}\left(u_{h 0}, v_{h}\right)+b_{h}\left(u_{h 0}, v_{h}\right)=\left(\nabla w_{h}, \nabla_{h} v_{h}\right)\)}{Forms for \textbackslash{}varepsilon\^{}\{2\} a\_\{h\}\textbackslash{}left(u\_\{h 0\}, v\_\{h\}\textbackslash{}right)+b\_\{h\}\textbackslash{}left(u\_\{h 0\}, v\_\{h\}\textbackslash{}right)=\textbackslash{}left(\textbackslash{}nabla w\_\{h\}, \textbackslash{}nabla\_\{h\} v\_\{h\}\textbackslash{}right)}}\label{forms-for-varepsilon2-a_hleftu_h-0-v_hrightb_hleftu_h-0-v_hrightleftnabla-w_h-nabla_h-v_hright}
 
@@ -560,7 +506,7 @@ a_{h}\left(u_{h 0}, v_{h}\right):=\left(\nabla_{h}^{2} u_{h 0}, \nabla_{h}^{2} v
 \]
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{65}{\boxspacing}
+\prompt{In}{incolor}{20}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nd}{@BilinearForm}
 \PY{k}{def} \PY{n+nf}{a\PYZus{}load}\PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{:}
@@ -591,7 +537,7 @@ a_{h}\left(u_{h 0}, v_{h}\right):=\left(\nabla_{h}^{2} u_{h 0}, \nabla_{h}^{2} v
 conditions}\label{setting-boundary-conditions}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{67}{\boxspacing}
+\prompt{In}{incolor}{21}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{def} \PY{n+nf}{easy\PYZus{}boundary}\PY{p}{(}\PY{n}{basis}\PY{p}{)}\PY{p}{:}
     \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
@@ -619,109 +565,78 @@ conditions}\label{setting-boundary-conditions}
 \(u_{h0}\)}{Solving u\_\{h0\}}}\label{solving-u_h0}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{68}{\boxspacing}
+\prompt{In}{incolor}{22}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{o}{\PYZpc{}\PYZpc{}time}
 
 \PY{n}{D} \PY{o}{=} \PY{n}{easy\PYZus{}boundary}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
 \PY{n}{K2} \PY{o}{=} \PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{asm}\PY{p}{(}\PY{n}{a\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{asm}\PY{p}{(}\PY{n}{b\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
 \PY{n}{f2} \PY{o}{=} \PY{n}{asm}\PY{p}{(}\PY{n}{wv\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{n}{wh}
-\PY{n}{uh0} \PY{o}{=} \PY{n}{solve}\PY{p}{(}\PY{o}{*}\PY{n}{condense}\PY{p}{(}\PY{n}{K2}\PY{p}{,} \PY{n}{f2}\PY{p}{,} \PY{n}{D}\PY{o}{=}\PY{n}{D}\PY{p}{)}\PY{p}{,} \PY{n}{solver}\PY{o}{=}\PY{n}{solver\PYZus{}iter\PYZus{}krylov}\PY{p}{(}\PY{n}{Precondition}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{)}
+\PY{n}{uh0} \PY{o}{=} \PY{n}{solve}\PY{p}{(}\PY{o}{*}\PY{n}{condense}\PY{p}{(}\PY{n}{K2}\PY{p}{,} \PY{n}{f2}\PY{p}{,} \PY{n}{D}\PY{o}{=}\PY{n}{D}\PY{p}{)}\PY{p}{,} \PY{n}{solver}\PY{o}{=}\PY{n}{solver\PYZus{}iter\PYZus{}krylov}\PY{p}{(}\PY{n}{Precondition}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} cg}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-build\_pc\_diag(A) enabled
-Wall time: 74.8 ms
+Wall time: 65.8 ms
     \end{Verbatim}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{69}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{uh0}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    \subsubsection{\texorpdfstring{Showing exact
-\(u\)}{Showing exact u}}\label{showing-exact-u}
+    \subsubsection{\texorpdfstring{Computing \(L_{2}\) \(H_{1}\) \(H_{2}\)
+error with \(u_{h0}\) and
+\(u\)}{Computing L\_\{2\} H\_\{1\} H\_\{2\} error with u\_\{h0\} and u}}\label{computing-l_2-h_1-h_2-error-with-u_h0-and-u}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{70}{\boxspacing}
+\prompt{In}{incolor}{45}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{u} \PY{o}{=} \PY{n}{exact\PYZus{}u}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{k}{def} \PY{n+nf}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{(}\PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)} \PY{o}{*} \PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
 
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{u}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
+\PY{k}{def} \PY{n+nf}{dexact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{dux} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{pi} \PY{o}{*} \PY{n}{cos}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)} \PY{o}{*} \PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)} \PY{o}{*} \PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{n}{duy} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{pi} \PY{o}{*} \PY{n}{cos}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)} \PY{o}{*} \PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{sin}\PY{p}{(}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)}
+    \PY{k}{return} \PY{n}{dux}\PY{p}{,} \PY{n}{duy}
 
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    \subsubsection{\texorpdfstring{Visualizing error
-\(u - u_{h0}\)}{Visualizing error u - u\_\{h0\}}}\label{visualizing-error-u---u_h0}
+\PY{k}{def} \PY{n+nf}{ddexact}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{duxx} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{cos}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{n}{duxy} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{n}{cos}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{n}{cos}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}
+    \PY{n}{duyx} \PY{o}{=} \PY{n}{duxy}
+    \PY{n}{duyy} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{cos}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pi}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{n}{pi}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{k}{return} \PY{n}{duxx}\PY{p}{,} \PY{n}{duxy}\PY{p}{,} \PY{n}{duyx}\PY{p}{,} \PY{n}{duyy}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{72}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{u}\PY{o}{\PYZhy{}}\PY{n}{uh0}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
-\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_27_0.png}
-    \end{center}
-    { \hspace*{\fill} \\}
-    
-    \subsubsection{\texorpdfstring{Computing \(L_{2}\) error with \(u_{h0}\)
-and
-\(u\)}{Computing L\_\{2\} error with u\_\{h0\} and u}}\label{computing-l_2-error-with-u_h0-and-u}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{77}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nd}{@Functional}
 \PY{k}{def} \PY{n+nf}{L2uError}\PY{p}{(}\PY{n}{w}\PY{p}{)}\PY{p}{:}
     \PY{n}{x}\PY{p}{,} \PY{n}{y} \PY{o}{=} \PY{n}{w}\PY{o}{.}\PY{n}{x}
     \PY{k}{return} \PY{p}{(}\PY{n}{w}\PY{o}{.}\PY{n}{w} \PY{o}{\PYZhy{}} \PY{n}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+
+\PY{k}{def} \PY{n+nf}{get\PYZus{}DuError}\PY{p}{(}\PY{n}{basis}\PY{p}{,} \PY{n}{u}\PY{p}{)}\PY{p}{:}
+    \PY{n}{duh} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{u}\PY{p}{)}\PY{o}{.}\PY{n}{grad}
+    \PY{n}{x} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{global\PYZus{}coordinates}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{value}
+    \PY{n}{dx} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{dx}  \PY{c+c1}{\PYZsh{} quadrature weights}
+    \PY{n}{dux}\PY{p}{,} \PY{n}{duy} \PY{o}{=} \PY{n}{dexact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{p}{(}\PY{n}{duh}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{dux}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{duh}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{duy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{*} \PY{n}{dx}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{get\PYZus{}D2uError}\PY{p}{(}\PY{n}{basis}\PY{p}{,} \PY{n}{u}\PY{p}{)}\PY{p}{:}
+    \PY{n}{dduh} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{u}\PY{p}{)}\PY{o}{.}\PY{n}{hess}
+    \PY{n}{x} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{global\PYZus{}coordinates}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{value}  \PY{c+c1}{\PYZsh{} coordinates of quadrature points [x, y]}
+    \PY{n}{dx} \PY{o}{=} \PY{n}{basis}\PY{o}{.}\PY{n}{dx}  \PY{c+c1}{\PYZsh{} quadrature weights}
+    \PY{n}{duxx}\PY{p}{,} \PY{n}{duxy}\PY{p}{,} \PY{n}{duyx}\PY{p}{,} \PY{n}{duyy} \PY{o}{=} \PY{n}{ddexact}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}
+        \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{p}{(}\PY{n}{dduh}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{duxx}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{dduh}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{duxy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+}
+                \PY{p}{(}\PY{n}{dduh}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{duyy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{dduh}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{duyx}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{*} \PY{n}{dx}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{78}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{U} \PY{o}{=} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{uh0}\PY{p}{)}\PY{o}{.}\PY{n}{value}
-
-\PY{n}{L2u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{L2uError}\PY{o}{.}\PY{n}{assemble}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w}\PY{o}{=}\PY{n}{U}\PY{p}{)}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L2 error of uh0:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{L2u}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-L2 error of uh0: 0.0005506239320336788
-    \end{Verbatim}
-
-    \#\#\#\# Convergence with \[\epsilon = 1\]
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{79}{\boxspacing}
+\prompt{In}{incolor}{38}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{1}
 
-\PY{n}{currentL2u} \PY{o}{=} \PY{l+m+mi}{1}
-\PY{n}{formerL2u} \PY{o}{=} \PY{l+m+mi}{1}
+\PY{n}{L2\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{Du\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{D2u\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{h\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{]}
 \PY{n}{m} \PY{o}{=} \PY{n}{MeshTri}\PY{p}{(}\PY{p}{)}
 
-\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{:}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{)}\PY{p}{:}
     \PY{n}{m}\PY{o}{.}\PY{n}{refine}\PY{p}{(}\PY{p}{)}
 
     \PY{n}{element} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriP1}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriMorley}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}
@@ -741,112 +656,128 @@ L2 error of uh0: 0.0005506239320336788
     \PY{n}{U} \PY{o}{=} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{uh0}\PY{p}{)}\PY{o}{.}\PY{n}{value}
 
     \PY{n}{L2u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{L2uError}\PY{o}{.}\PY{n}{assemble}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w}\PY{o}{=}\PY{n}{U}\PY{p}{)}\PY{p}{)}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{case 2\PYZca{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}
+    \PY{n}{Du} \PY{o}{=} \PY{n}{get\PYZus{}DuError}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{uh0}\PY{p}{)}
+    \PY{n}{H1u} \PY{o}{=} \PY{n}{Du} \PY{o}{+} \PY{n}{L2u}
+    \PY{n}{D2u} \PY{o}{=} \PY{n}{get\PYZus{}D2uError}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{uh0}\PY{p}{)}
+    \PY{n}{H2u} \PY{o}{=} \PY{n}{Du} \PY{o}{+} \PY{n}{L2u} \PY{o}{+} \PY{n}{D2u}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Case 2\PYZca{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}
     \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L2 error of uh0:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{L2u}\PY{p}{)}
-    \PY{n}{currentL2u} \PY{o}{=} \PY{n}{L2u}
-    \PY{k}{if} \PY{n}{i} \PY{o}{!=} \PY{l+m+mi}{1}\PY{p}{:}
-        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{currentL2u}\PY{o}{/}\PY{n}{formerL2u}\PY{p}{)}\PY{p}{)}
-    \PY{n}{formerL2u} \PY{o}{=} \PY{n}{L2u}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{H1 error of uh0:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{H1u}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{H2 error of uh0:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{H2u}\PY{p}{)}
+    \PY{n}{h\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{m}\PY{o}{.}\PY{n}{param}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{Du\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{Du}\PY{p}{)}
+    \PY{n}{L2\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{L2u}\PY{p}{)}
+    \PY{n}{D2u\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{D2u}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-1
+Case 2\^{}-1
 L2 error of uh0: 0.14312157458419236
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-2
+H1 error of uh0: 1.1285182985411255
+H2 error of uh0: 13.136803545627988
+Case 2\^{}-2
 L2 error of uh0: 0.041409209806485096
-rate 1.7892175869478015
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-3
+H1 error of uh0: 0.6019549703041572
+H2 error of uh0: 8.166025291658702
+Case 2\^{}-3
 L2 error of uh0: 0.00905868775220735
-rate 2.192577691947967
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-4
+H1 error of uh0: 0.17818886544221169
+H2 error of uh0: 4.013397269740482
+Case 2\^{}-4
 L2 error of uh0: 0.0020300577442618198
-rate 2.1577813106674504
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-5
+H1 error of uh0: 0.046720223553143266
+H2 error of uh0: 1.9423395021729348
+Case 2\^{}-5
 L2 error of uh0: 0.0004859434175848888
-rate 2.0626605211396885
+H1 error of uh0: 0.011822005583285031
+H2 error of uh0: 0.9550957673989472
+Case 2\^{}-6
+L2 error of uh0: 0.00011996444727651908
+H1 error of uh0: 0.0029644451905044395
+H2 error of uh0: 0.47396480908547806
     \end{Verbatim}
-
-    \paragraph{\texorpdfstring{Convergence with
-\[\epsilon = 10^{-6}\]}{Convergence with \textbackslash{}epsilon = 10\^{}\{-6\}}}\label{convergence-with-epsilon-10-6}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{81}{\boxspacing}
+\prompt{In}{incolor}{39}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mf}{1e\PYZhy{}6}
+\PY{n}{hs} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{h\PYZus{}list}\PY{p}{)}
+\PY{n}{L2s} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{L2\PYZus{}list}\PY{p}{)}
+\PY{n}{Dus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Du\PYZus{}list}\PY{p}{)}
+\PY{n}{D2us} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{D2u\PYZus{}list}\PY{p}{)}
 
-\PY{n}{currentL2u} \PY{o}{=} \PY{l+m+mi}{1}
-\PY{n}{formerL2u} \PY{o}{=} \PY{l+m+mi}{1}
-\PY{n}{m} \PY{o}{=} \PY{n}{MeshTri}\PY{p}{(}\PY{p}{)}
-
-\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{:}
-    \PY{n}{m}\PY{o}{.}\PY{n}{refine}\PY{p}{(}\PY{p}{)}
-
-    \PY{n}{element} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriP1}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriMorley}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}
-    \PY{n}{basis} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{variable}\PY{p}{:} \PY{n}{InteriorBasis}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{e}\PY{p}{,} \PY{n}{intorder}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
-        \PY{k}{for} \PY{n}{variable}\PY{p}{,} \PY{n}{e} \PY{o+ow}{in} \PY{n}{element}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} intorder: integration order for quadrature}
-
-    \PY{n}{K1} \PY{o}{=} \PY{n}{asm}\PY{p}{(}\PY{n}{laplace}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
-    \PY{n}{f1} \PY{o}{=} \PY{n}{asm}\PY{p}{(}\PY{n}{f\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
-
-    \PY{n}{wh} \PY{o}{=} \PY{n}{solve}\PY{p}{(}\PY{o}{*}\PY{n}{condense}\PY{p}{(}\PY{n}{K1}\PY{p}{,} \PY{n}{f1}\PY{p}{,} \PY{n}{D}\PY{o}{=}\PY{n}{m}\PY{o}{.}\PY{n}{boundary\PYZus{}nodes}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{solver}\PY{o}{=}\PY{n}{solver\PYZus{}iter\PYZus{}krylov}\PY{p}{(}\PY{n}{Precondition}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{)}
-
-    \PY{n}{D} \PY{o}{=} \PY{n}{easy\PYZus{}boundary}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
-    \PY{n}{K2} \PY{o}{=} \PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{asm}\PY{p}{(}\PY{n}{a\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{asm}\PY{p}{(}\PY{n}{b\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
-    \PY{n}{f2} \PY{o}{=} \PY{n}{asm}\PY{p}{(}\PY{n}{wv\PYZus{}load}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)} \PY{o}{*} \PY{n}{wh}
-    \PY{n}{uh0} \PY{o}{=} \PY{n}{solve}\PY{p}{(}\PY{o}{*}\PY{n}{condense}\PY{p}{(}\PY{n}{K2}\PY{p}{,} \PY{n}{f2}\PY{p}{,} \PY{n}{D}\PY{o}{=}\PY{n}{D}\PY{p}{)}\PY{p}{,} \PY{n}{solver}\PY{o}{=}\PY{n}{solver\PYZus{}iter\PYZus{}krylov}\PY{p}{(}\PY{n}{Precondition}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{)}
-
-    \PY{n}{U} \PY{o}{=} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{uh0}\PY{p}{)}\PY{o}{.}\PY{n}{value}
-
-    \PY{n}{L2u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{L2uError}\PY{o}{.}\PY{n}{assemble}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w}\PY{o}{=}\PY{n}{U}\PY{p}{)}\PY{p}{)}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{case 2\PYZca{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L2 error of uh0:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{L2u}\PY{p}{)}
-    \PY{n}{currentL2u} \PY{o}{=} \PY{n}{L2u}
-    \PY{k}{if} \PY{n}{i} \PY{o}{!=} \PY{l+m+mi}{1}\PY{p}{:}
-        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{currentL2u}\PY{o}{/}\PY{n}{formerL2u}\PY{p}{)}\PY{p}{)}
-    \PY{n}{formerL2u} \PY{o}{=} \PY{n}{L2u}
+\PY{n}{H1s} \PY{o}{=} \PY{n}{L2s} \PY{o}{+} \PY{n}{Dus}
+\PY{n}{H2s} \PY{o}{=} \PY{n}{H1s} \PY{o}{+} \PY{n}{D2us}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{epsilon =}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{  h    L2u   H1u   H2u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{H2s}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2\PYZca{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+si}{\PYZob{}:.2f\PYZcb{}}\PY{l+s+s1}{  }\PY{l+s+si}{\PYZob{}:.2f\PYZcb{}}\PY{l+s+s1}{  }\PY{l+s+si}{\PYZob{}:.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{L2s}\PY{p}{[}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{/} \PY{n}{L2s}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                                         \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{H1s}\PY{p}{[}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{/} \PY{n}{H1s}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                                         \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{H2s}\PY{p}{[}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{/} \PY{n}{H2s}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-1
-L2 error of uh0: 0.1589487110205496
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-2
-L2 error of uh0: 0.058990938135133085
-rate 1.4299960594294439
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-3
-L2 error of uh0: 0.01202629748858373
-rate 2.294300801260063
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-4
-L2 error of uh0: 0.0024264810981080463
-rate 2.309255024423518
-build\_pc\_diag(A) enabled
-build\_pc\_diag(A) enabled
-case 2\^{}-5
-L2 error of uh0: 0.0005506239402151528
-rate 2.1397263793908747
+epsilon = 1
+  h    L2u   H1u   H2u
+2\^{}-2  1.79  0.91  0.69
+2\^{}-3  2.19  1.76  1.02
+2\^{}-4  2.16  1.93  1.05
+2\^{}-5  2.06  1.98  1.02
+2\^{}-6  2.02  2.00  1.01
     \end{Verbatim}
 
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hs\PYZus{}Log} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{log2}\PY{p}{(}\PY{n}{hs}\PY{p}{)}
 
-    % Add a bibliography block to the postdoc
+\PY{n}{L2plot}\PY{p}{,} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{hs\PYZus{}Log}\PY{p}{,}
+                   \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{L2s}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{marker}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|u\PYZus{}}\PY{l+s+si}{\PYZob{}h0\PYZcb{}}\PY{l+s+s1}{\PYZhy{}u}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{||\PYZcb{}\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{Duplot}\PY{p}{,} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{hs\PYZus{}Log}\PY{p}{,}
+                   \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{H1s}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{marker}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{left}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|}\PY{l+s+si}{\PYZob{}Du\PYZcb{}}\PY{l+s+s1}{\PYZus{}}\PY{l+s+si}{\PYZob{}h0\PYZcb{}}\PY{l+s+s1}{\PYZhy{}Du}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{||\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                   \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{purple}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{H1plot}\PY{p}{,} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{hs\PYZus{}Log}\PY{p}{,}
+                   \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{H1s}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{marker}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{left}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|}\PY{l+s+si}{\PYZob{}u\PYZcb{}}\PY{l+s+s1}{\PYZus{}}\PY{l+s+si}{\PYZob{}h0\PYZcb{}}\PY{l+s+s1}{\PYZhy{}u}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{||\PYZus{}}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{1, h\PYZcb{}\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                   \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{H2plot}\PY{p}{,} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{hs\PYZus{}Log}\PY{p}{,}
+                   \PY{n}{np}\PY{o}{.}\PY{n}{log10}\PY{p}{(}\PY{n}{H2s}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{marker}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{left}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|}\PY{l+s+si}{\PYZob{}u\PYZcb{}}\PY{l+s+s1}{\PYZus{}}\PY{l+s+si}{\PYZob{}h0\PYZcb{}}\PY{l+s+s1}{\PYZhy{}u}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{||\PYZus{}}\PY{l+s+s1}{\PYZob{}}\PY{l+s+s1}{2, h\PYZcb{}\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                   \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{brown}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{handles}\PY{o}{=}\PY{p}{[}\PY{n}{L2plot}\PY{p}{,} \PY{n}{Duplot}\PY{p}{,} \PY{n}{H1plot}\PY{p}{,} \PY{n}{H2plot}\PY{p}{]}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rate of convergence when epsilon=}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{epsilon}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}log\PYZus{}}\PY{l+s+si}{\PYZob{}2\PYZcb{}}\PY{l+s+s1}{(1/h)\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}log(Error)\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_21_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsection{Problem 2}\label{problem-2}
+
+    The modified Morley-Wang-Xu element method is also equivalent to \[
+\begin{aligned}
+\left(\nabla w_{h}, \nabla \chi_{h}\right) &=\left(f, \chi_{h}\right) & & \forall \chi_{h} \in W_{h} \\
+\varepsilon^{2} \tilde{a}_{h}\left(u_{h}, v_{h}\right)+b_{h}\left(u_{h}, v_{h}\right) &=\left(\nabla w_{h}, \nabla_{h} v_{h}\right) & & \forall v_{h} \in V_{h}
+\end{aligned}
+\] where \[
+\tilde{a}_{h}\left(u_{h}, v_{h}\right):=\left(\nabla_{h}^{2} u_{h}, \nabla_{h}^{2} v_{h}\right)-\sum_{F \in \mathcal{F}_{h}^{\partial}}\left(\partial_{n n}^{2} u_{h}, \partial_{n} v_{h}\right)_{F}-\sum_{F \in \mathcal{F}_{h}^{\partial}}\left(\partial_{n} u_{h}, \partial_{n n}^{2} v_{h}\right)_{F}+\sum_{F \in \mathcal{F}_{h}^{0}} \frac{\sigma}{h_{F}}\left(\partial_{n} u_{h}, \partial_{n} v_{h}\right)_{F}
+\]
+
     
     
     
