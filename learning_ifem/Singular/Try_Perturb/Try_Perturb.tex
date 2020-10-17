@@ -379,8 +379,18 @@
     
 
     
+    \section{Solving a Fourth Order Elliptic Singular Perturbation
+Problem}\label{solving-a-fourth-order-elliptic-singular-perturbation-problem}
+
+\[
+\left\{\begin{array}{lr}
+\varepsilon^{2} \Delta^{2} u-\Delta u=f & \text { in } \Omega \\
+u=\partial_{n} u=0 & \text { on } \partial \Omega
+\end{array}\right.
+\]
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{10}{\boxspacing}
+\prompt{In}{incolor}{2}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k+kn}{from} \PY{n+nn}{skfem} \PY{k+kn}{import} \PY{o}{*}
 \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
@@ -393,6 +403,7 @@
 \PY{k+kn}{from} \PY{n+nn}{skfem}\PY{n+nn}{.}\PY{n+nn}{assembly} \PY{k+kn}{import} \PY{n}{BilinearForm}\PY{p}{,} \PY{n}{LinearForm}
 \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
 \PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits}\PY{n+nn}{.}\PY{n+nn}{mplot3d} \PY{k+kn}{import} \PY{n}{Axes3D}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{figure.dpi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -416,12 +427,11 @@ u\left(x_{1}, x_{2}\right)=\left(\sin \left(\pi x_{1}\right) \sin \left(\pi x_{2
 mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilon-and-generating-mesh}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{204}{\boxspacing}
+\prompt{In}{incolor}{36}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{0}
-
-\PY{n}{m} \PY{o}{=} \PY{n}{MeshTri}\PY{p}{(}\PY{p}{)}
-\PY{n}{m}\PY{o}{.}\PY{n}{refine}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{)}
+\PY{n}{m} \PY{o}{=} \PY{n}{MeshTri}\PY{o}{.}\PY{n}{init\PYZus{}symmetric}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} m = MeshTri()}
+\PY{n}{m}\PY{o}{.}\PY{n}{refine}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
 \PY{n}{element} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriP1}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ElementTriMorley}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}
 \PY{n}{basis} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{variable}\PY{p}{:} \PY{n}{InteriorBasis}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{e}\PY{p}{,} \PY{n}{intorder}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
     \PY{k}{for} \PY{n}{variable}\PY{p}{,} \PY{n}{e} \PY{o+ow}{in} \PY{n}{element}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} intorder: integration order for quadrature}
@@ -434,7 +444,7 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
     \subsubsection{\texorpdfstring{Exact \(u\)}{Exact u}}\label{exact-u}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{165}{\boxspacing}
+\prompt{In}{incolor}{37}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{def} \PY{n+nf}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
     \PY{k}{return} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{x}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
@@ -445,8 +455,9 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \(\left(\nabla w_{h}, \nabla \chi_{h}\right)=\left(f, \chi_{h}\right)\)}{Forms for \textbackslash{}left(\textbackslash{}nabla w\_\{h\}, \textbackslash{}nabla \textbackslash{}chi\_\{h\}\textbackslash{}right)=\textbackslash{}left(f, \textbackslash{}chi\_\{h\}\textbackslash{}right)}}\label{forms-for-leftnabla-w_h-nabla-chi_hrightleftf-chi_hright}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{174}{\boxspacing}
+\prompt{In}{incolor}{59}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{0}
 \PY{n+nd}{@BilinearForm}
 \PY{k}{def} \PY{n+nf}{laplace}\PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{:}
     \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
@@ -462,9 +473,9 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \PY{l+s+sd}{    \PYZsq{}\PYZsq{}\PYZsq{}}
     \PY{n}{pix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
     \PY{n}{piy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{w}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
-    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
-    \PY{n}{llu} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{8}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{p}{)}
-    \PY{k}{return} \PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{llu} \PY{o}{\PYZhy{}} \PY{n}{lu}
+    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+    \PY{n}{llu} \PY{o}{=} \PY{o}{\PYZhy{}} \PY{l+m+mi}{8} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{p}{(}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{llu} \PY{o}{\PYZhy{}} \PY{n}{lu}\PY{p}{)} \PY{o}{*} \PY{n}{v}
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -472,7 +483,7 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 \(w_{h}\)}{Solving w\_\{h\}}}\label{solving-w_h}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{175}{\boxspacing}
+\prompt{In}{incolor}{60}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{o}{\PYZpc{}\PYZpc{}time}
 
@@ -485,9 +496,62 @@ mesh}{Setting \textbackslash{}epsilon and generating mesh}}\label{setting-epsilo
 
     \begin{Verbatim}[commandchars=\\\{\}]
 build\_pc\_diag(A) enabled
-Wall time: 295 ms
+Wall time: 23.8 ms
     \end{Verbatim}
 
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{exact\PYZus{}w}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{pix} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{x}
+    \PY{n}{piy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{y}
+    \PY{n}{lu} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{piy}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{n}{u} \PY{o}{=} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{pix}\PY{p}{)} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{piy}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{k}{return} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{lu} \PY{o}{\PYZhy{}} \PY{n}{u}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{wh}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w} \PY{o}{=} \PY{n}{exact\PYZus{}w}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{w} \PY{o}{\PYZhy{}} \PY{n}{wh}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
     \subsubsection{\texorpdfstring{Forms for
 \(\varepsilon^{2} a_{h}\left(u_{h 0}, v_{h}\right)+b_{h}\left(u_{h 0}, v_{h}\right)=\left(\nabla w_{h}, \nabla_{h} v_{h}\right)\)}{Forms for \textbackslash{}varepsilon\^{}\{2\} a\_\{h\}\textbackslash{}left(u\_\{h 0\}, v\_\{h\}\textbackslash{}right)+b\_\{h\}\textbackslash{}left(u\_\{h 0\}, v\_\{h\}\textbackslash{}right)=\textbackslash{}left(\textbackslash{}nabla w\_\{h\}, \textbackslash{}nabla\_\{h\} v\_\{h\}\textbackslash{}right)}}\label{forms-for-varepsilon2-a_hleftu_h-0-v_hrightb_hleftu_h-0-v_hrightleftnabla-w_h-nabla_h-v_hright}
 
@@ -496,7 +560,7 @@ a_{h}\left(u_{h 0}, v_{h}\right):=\left(\nabla_{h}^{2} u_{h 0}, \nabla_{h}^{2} v
 \]
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{176}{\boxspacing}
+\prompt{In}{incolor}{65}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nd}{@BilinearForm}
 \PY{k}{def} \PY{n+nf}{a\PYZus{}load}\PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{:}
@@ -527,7 +591,7 @@ a_{h}\left(u_{h 0}, v_{h}\right):=\left(\nabla_{h}^{2} u_{h 0}, \nabla_{h}^{2} v
 conditions}\label{setting-boundary-conditions}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{177}{\boxspacing}
+\prompt{In}{incolor}{67}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{def} \PY{n+nf}{easy\PYZus{}boundary}\PY{p}{(}\PY{n}{basis}\PY{p}{)}\PY{p}{:}
     \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
@@ -555,7 +619,7 @@ conditions}\label{setting-boundary-conditions}
 \(u_{h0}\)}{Solving u\_\{h0\}}}\label{solving-u_h0}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{178}{\boxspacing}
+\prompt{In}{incolor}{68}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{o}{\PYZpc{}\PYZpc{}time}
 
@@ -568,11 +632,11 @@ conditions}\label{setting-boundary-conditions}
 
     \begin{Verbatim}[commandchars=\\\{\}]
 build\_pc\_diag(A) enabled
-Wall time: 971 ms
+Wall time: 74.8 ms
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{179}{\boxspacing}
+\prompt{In}{incolor}{69}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{uh0}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
@@ -580,7 +644,7 @@ Wall time: 971 ms
 \end{tcolorbox}
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_18_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
@@ -588,7 +652,7 @@ Wall time: 971 ms
 \(u\)}{Showing exact u}}\label{showing-exact-u}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{172}{\boxspacing}
+\prompt{In}{incolor}{70}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{u} \PY{o}{=} \PY{n}{exact\PYZus{}u}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{doflocs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
 
@@ -598,42 +662,42 @@ Wall time: 971 ms
 \end{tcolorbox}
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_20_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
-    \subsubsection{\texorpdfstring{Visualizing error with
-\(\frac{u_{h0}}{3}\)}{Visualizing error with \textbackslash{}frac\{u\_\{h0\}\}\{3\}}}\label{visualizing-error-with-fracu_h03}
+    \subsubsection{\texorpdfstring{Visualizing error
+\(u - u_{h0}\)}{Visualizing error u - u\_\{h0\}}}\label{visualizing-error-u---u_h0}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{173}{\boxspacing}
+\prompt{In}{incolor}{72}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{u}\PY{o}{\PYZhy{}}\PY{n}{uh0}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plot}\PY{p}{(}\PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{u}\PY{o}{\PYZhy{}}\PY{n}{uh0}\PY{p}{,} \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_22_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_27_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
-    \subsubsection{\texorpdfstring{Computing \(L_{2}\) error with
-\(\frac{u_{h0}}{3}\) and
-\(u\)}{Computing L\_\{2\} error with \textbackslash{}frac\{u\_\{h0\}\}\{3\} and u}}\label{computing-l_2-error-with-fracu_h03-and-u}
+    \subsubsection{\texorpdfstring{Computing \(L_{2}\) error with \(u_{h0}\)
+and
+\(u\)}{Computing L\_\{2\} error with u\_\{h0\} and u}}\label{computing-l_2-error-with-u_h0-and-u}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{187}{\boxspacing}
+\prompt{In}{incolor}{77}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nd}{@Functional}
 \PY{k}{def} \PY{n+nf}{L2uError}\PY{p}{(}\PY{n}{w}\PY{p}{)}\PY{p}{:}
     \PY{n}{x}\PY{p}{,} \PY{n}{y} \PY{o}{=} \PY{n}{w}\PY{o}{.}\PY{n}{x}
-    \PY{k}{return} \PY{p}{(}\PY{n}{w}\PY{o}{.}\PY{n}{w}\PY{o}{/}\PY{l+m+mi}{3} \PY{o}{\PYZhy{}} \PY{n}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{k}{return} \PY{p}{(}\PY{n}{w}\PY{o}{.}\PY{n}{w} \PY{o}{\PYZhy{}} \PY{n}{exact\PYZus{}u}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{191}{\boxspacing}
+\prompt{In}{incolor}{78}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{U} \PY{o}{=} \PY{n}{basis}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{interpolate}\PY{p}{(}\PY{n}{uh0}\PY{p}{)}\PY{o}{.}\PY{n}{value}
 
@@ -643,17 +707,13 @@ Wall time: 971 ms
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-L2 error of uh0: 9.45735949297556e-05
+L2 error of uh0: 0.0005506239320336788
     \end{Verbatim}
 
-    \begin{itemize}
-\tightlist
-\item
-  Experiment with \[\epsilon = 1\]
-\end{itemize}
+    \#\#\#\# Convergence with \[\epsilon = 1\]
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{203}{\boxspacing}
+\prompt{In}{incolor}{79}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{1}
 
@@ -694,39 +754,36 @@ L2 error of uh0: 9.45735949297556e-05
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-1
-L2 error of uh0: 0.3053056975204082
+L2 error of uh0: 0.14312157458419236
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-2
-L2 error of uh0: 0.0925598803790994
-rate 1.7217956078495706
+L2 error of uh0: 0.041409209806485096
+rate 1.7892175869478015
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-3
-L2 error of uh0: 0.024051351828304538
-rate 1.9442690156887794
+L2 error of uh0: 0.00905868775220735
+rate 2.192577691947967
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-4
-L2 error of uh0: 0.005994968114556966
-rate 2.004293998764181
+L2 error of uh0: 0.0020300577442618198
+rate 2.1577813106674504
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-5
-L2 error of uh0: 0.0014949503232293947
-rate 2.0036545355189888
+L2 error of uh0: 0.0004859434175848888
+rate 2.0626605211396885
     \end{Verbatim}
 
-    \begin{itemize}
-\tightlist
-\item
-  Experiment with \[\epsilon = 0\]
-\end{itemize}
+    \paragraph{\texorpdfstring{Convergence with
+\[\epsilon = 10^{-6}\]}{Convergence with \textbackslash{}epsilon = 10\^{}\{-6\}}}\label{convergence-with-epsilon-10-6}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{205}{\boxspacing}
+\prompt{In}{incolor}{81}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mi}{0}
+\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mf}{1e\PYZhy{}6}
 
 \PY{n}{currentL2u} \PY{o}{=} \PY{l+m+mi}{1}
 \PY{n}{formerL2u} \PY{o}{=} \PY{l+m+mi}{1}
@@ -765,31 +822,29 @@ rate 2.0036545355189888
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-1
-L2 error of uh0: 0.3190530969913223
+L2 error of uh0: 0.1589487110205496
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-2
-L2 error of uh0: 0.106488225500884
-rate 1.5831026188922919
+L2 error of uh0: 0.058990938135133085
+rate 1.4299960594294439
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-3
-L2 error of uh0: 0.026257805710669217
-rate 2.019875654674116
+L2 error of uh0: 0.01202629748858373
+rate 2.294300801260063
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-4
-L2 error of uh0: 0.006231892125251031
-rate 2.075004193875261
+L2 error of uh0: 0.0024264810981080463
+rate 2.309255024423518
 build\_pc\_diag(A) enabled
 build\_pc\_diag(A) enabled
 case 2\^{}-5
-L2 error of uh0: 0.001524934295446471
-rate 2.0309231775151604
+L2 error of uh0: 0.0005506239402151528
+rate 2.1397263793908747
     \end{Verbatim}
 
-    
-    
 
     % Add a bibliography block to the postdoc
     

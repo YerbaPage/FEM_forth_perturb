@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{Solving a Fourth Order Elliptic Singular Perturbation Problem}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Problem 1}{section.1}% 2
+\BOOKMARK [3][-]{subsubsection.1.1.1}{Setting \134epsilon and generating mesh}{subsection.1.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.1.2}{Exact u}{subsection.1.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.1.3}{Forms for \134left\(\134nabla w\137\173h\175, \134nabla \134chi\137\173h\175\134right\)=\134left\(f, \134chi\137\173h\175\134right\)}{subsection.1.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.1.4}{Solving w\137\173h\175}{subsection.1.1}% 6
+\BOOKMARK [3][-]{subsubsection.1.1.5}{Forms for \134varepsilon\136\1732\175 a\137\173h\175\134left\(u\137\173h 0\175, v\137\173h\175\134right\)+b\137\173h\175\134left\(u\137\173h 0\175, v\137\173h\175\134right\)=\134left\(\134nabla w\137\173h\175, \134nabla\137\173h\175 v\137\173h\175\134right\)}{subsection.1.1}% 7
+\BOOKMARK [3][-]{subsubsection.1.1.6}{Setting boundary conditions}{subsection.1.1}% 8
+\BOOKMARK [3][-]{subsubsection.1.1.7}{Solving u\137\173h0\175}{subsection.1.1}% 9
+\BOOKMARK [3][-]{subsubsection.1.1.8}{Showing exact u}{subsection.1.1}% 10
+\BOOKMARK [3][-]{subsubsection.1.1.9}{Visualizing error u - u\137\173h0\175}{subsection.1.1}% 11
+\BOOKMARK [3][-]{subsubsection.1.1.10}{Computing L\137\1732\175 error with u\137\173h0\175 and u}{subsection.1.1}% 12

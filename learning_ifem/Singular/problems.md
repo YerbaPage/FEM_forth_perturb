@@ -1,6 +1,7 @@
-- 求解器收敛性
-- 混合元逻辑
-- 具体求解方程组构建
-- morley for poisson 
-- examples to use
-- github 的 reply
+- [x] 求解器收敛性
+- [x] 混合元逻辑
+- [x] 具体求解方程组构建
+- [x] morley for poisson 
+- [x] examples to use
+- [x] github 的 reply
+- [ ] 忘记乘上另一个基函数时的 1/3
