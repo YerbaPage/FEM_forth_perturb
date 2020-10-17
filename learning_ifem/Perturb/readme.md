@@ -47,3 +47,15 @@ where
 $$
 c_{h}\left(\phi_{h}, \psi_{h}\right):=\left(\nabla_{h} \phi_{h}, \nabla_{h} \psi_{h}\right)-\sum_{F \in \mathcal{F}_{h}^{\partial}}\left(\partial_{n}\left(\phi_{h} \cdot t\right), \psi_{h} \cdot t\right)_{F}-\sum_{F \in \mathcal{F}_{h}^{\partial}}\left(\phi_{h} \cdot t, \partial_{n}\left(\psi_{h} \cdot t\right)\right)_{F}+\sum_{F \in \mathcal{F}_{h}^{\partial}} \frac{\sigma}{h_{F}}\left(\phi_{h} \cdot t, \psi_{h} \cdot t\right)_{F}
 $$
+
+### v1.1
+
+Finished example 1 
+
+### v1.2
+
+Fdded four examples to test
+
+### v1.3
+
+Tried penalty
