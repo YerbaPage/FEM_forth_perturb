@@ -59,3 +59,7 @@ Fdded four examples to test
 ### v1.3
 
 Tried penalty
+
+### v1.4
+
+Modified boundary conditions fot penalty and computed results of problem1 and 2
