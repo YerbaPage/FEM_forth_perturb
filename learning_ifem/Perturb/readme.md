@@ -70,3 +70,11 @@ Fixed penalty and showed $\partial u$ on boundary
 
 - [x] the result doesn't match result in v1.3, looking into this problem ==> changed into `MeshTri.init_symmetric()`
 
+### v1.6
+
+Printed $n$ planning to create a utils
+
+### v1.7
+
+Penalty seems to be right. Next starting to test sin(pix)sin(piy) problem for $u^{0}$
+
