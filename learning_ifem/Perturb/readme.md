@@ -66,4 +66,7 @@ Modified boundary conditions fot penalty and computed results of problem1 and 2
 
 ### v1.5
 
-Fixed penalty and showed $\partial u$ on boundary (the result doesn't match result in v1.3, looking into this problem)
+Fixed penalty and showed $\partial u$ on boundary 
+
+- [x] the result doesn't match result in v1.3, looking into this problem ==> changed into `MeshTri.init_symmetric()`
+
