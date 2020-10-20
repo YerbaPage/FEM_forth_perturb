@@ -78,3 +78,6 @@ Printed $n$ planning to create a utils
 
 Penalty seems to be right. Next starting to test sin(pix)sin(piy) problem for $u^{0}$
 
+### v1.8
+
+Adding example 3, there seems to be some problems solving $w$ .
