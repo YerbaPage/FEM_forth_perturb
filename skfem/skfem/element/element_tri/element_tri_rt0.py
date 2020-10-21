@@ -3,7 +3,6 @@ import numpy as np
 from ..element_hdiv import ElementHdiv
 from ...mesh.mesh2d import MeshTri
 
-
 class ElementTriRT0(ElementHdiv):
 
     facet_dofs = 1

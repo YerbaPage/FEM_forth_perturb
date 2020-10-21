@@ -19,7 +19,6 @@ from skfem.element import ElementVectorH1
 
 # custom types for describing input and output values
 
-
 LinearSolver = Callable[[spmatrix, ndarray], ndarray]
 EigenSolver = Callable[[spmatrix, spmatrix], Tuple[ndarray, ndarray]]
 CondensedSystem = Union[spmatrix,
@@ -113,8 +112,16 @@ def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
 
     def solver(A, b, **solve_time_kwargs):
         kwargs.update(solve_time_kwargs)
-        if 'M' not in kwargs:
+        pre = False
+        if 'Precondition' in kwargs:
+            if kwargs['Precondition'] == True:
+                pre = True
+            kwargs.pop('Precondition')
+        if 'M' not in kwargs and pre:
+            # print('build_pc_diag(A) enabled')
+            # pass
             kwargs['M'] = build_pc_diag(A)
+        # print(kwargs['M'])
         sol, info = krylov(A, b, **{'callback': callback, **kwargs})
         if info > 0:
             warnings.warn("Convergence not achieved!")
