@@ -81,3 +81,7 @@ Penalty seems to be right. Next starting to test sin(pix)sin(piy) problem for $u
 ### v1.8
 
 Adding example 3, there seems to be some problems solving $w$ .
+
+### v1.9
+
+P2 element problem found
