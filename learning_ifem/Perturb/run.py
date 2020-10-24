@@ -8,6 +8,7 @@ from skfem.models.poisson import *
 from skfem.assembly import BilinearForm, LinearForm
 import datetime
 import pandas as pd
+import sys
 
 pi = np.pi
 sin = np.sin
@@ -16,15 +17,22 @@ exp = np.exp
 
 # parameters
 
-save_path = 'log/{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 tol = 1e-8
 intorder = 5
 refine_time = 6
 epsilon_range = 5
 element_type = 'P1'
 sigma = 5
-penalty = True
+penalty = False
 example = 'ex1'
+
+# end of parameters
+pen_text = 'pen' if penalty else 'nopen'
+date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+save_path = 'log/' + example + '_' + element_type + '_' + pen_text + '_' +'{}'.format(date)
+
+f = open(save_path+'.txt', 'a')
+sys.stdout = f
 
 print('=====Arguments=====')
 print('example:\t{}'.format(example))
