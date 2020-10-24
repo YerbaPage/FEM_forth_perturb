@@ -27,14 +27,27 @@ penalty = False
 example = 'ex1'
 
 # end of parameters
-pen_text = 'pen' if penalty else 'nopen'
-date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-save_path = 'log/' + example + '_' + element_type + '_' + pen_text + '_' +'{}'.format(date)
 
-f = open(save_path+'.txt', 'a')
-sys.stdout = f
+save_path = 'log/' + example + '_' + element_type + '_' + ('pen' if penalty else 'nopen') + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
-print('=====Arguments=====')
+# output to txt 
+class Logger(object):
+    def __init__(self, filename=save_path+'.txt', stream=sys.stdout):
+	    self.terminal = stream
+	    self.log = open(filename, 'a')
+
+    def write(self, message):
+	    self.terminal.write(message)
+	    self.log.write(message)
+
+    def flush(self):
+	    pass
+
+sys.stdout = Logger(save_path+'.txt', sys.stdout)
+
+# print parameters
+
+print('=======Arguments=======')
 print('example:\t{}'.format(example))
 print('penalty:\t{}'.format(penalty))
 print('element_type:\t{}'.format(element_type))
@@ -44,7 +57,7 @@ print('refine_time:\t{}'.format(refine_time))
 print('epsilon_range:\t{}'.format(epsilon_range))
 print('sigma:\t{}'.format(sigma))
 print('save_path:\t{}'.format(save_path))
-print('=====Results=====')
+print('=======Results=======')
 
 # functions
 
@@ -508,4 +521,4 @@ for j in range(epsilon_range):
 
 result = df_list[0].append(df_list[1:])
 result.to_csv(save_path+'.csv')
-print('======= Results saved in:', save_path+'.csv ==========')
+print('======= Errors saved in:', save_path+'.csv ==========')
