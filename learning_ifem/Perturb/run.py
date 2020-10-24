@@ -1,6 +1,5 @@
 from skfem import *
 import numpy as np
-from skfem.visuals.matplotlib import draw, plot
 from skfem.utils import solver_iter_krylov
 from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
 from scipy.sparse.linalg import LinearOperator, minres
@@ -9,6 +8,7 @@ from skfem.assembly import BilinearForm, LinearForm
 import datetime
 import pandas as pd
 import sys
+import time
 
 pi = np.pi
 sin = np.sin
@@ -458,6 +458,8 @@ elif example == 'ex3':
 else:
     raise Exception('Example not supported')
 
+time_start = time.time()
+
 df_list = []
 for j in range(epsilon_range):
     epsilon = 1 * 10**(-j*2)
@@ -519,6 +521,9 @@ for j in range(epsilon_range):
 #                 H2s[i + 1],
 #                 epus[i + 1]))
 
+time_end = time.time()
+
 result = df_list[0].append(df_list[1:])
 result.to_csv(save_path+'.csv')
 print('======= Errors saved in:', save_path+'.csv ==========')
+print('Total Time Cost {:.2f} s'.format(time_end-time_start))
