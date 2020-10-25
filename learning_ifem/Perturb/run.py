@@ -21,10 +21,10 @@ tol = 1e-8
 intorder = 5
 refine_time = 6
 epsilon_range = 4
-zero_ep = True
+zero_ep = False
 element_type = 'P1'
 sigma = 5
-penalty = False
+penalty = True
 example = 'ex3'
 
 # end of parameters
