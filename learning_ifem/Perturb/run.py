@@ -1,6 +1,6 @@
 from skfem import *
 import numpy as np
-from skfem.utils import solver_iter_krylov
+from utils import solver_iter_krylov, solver_iter_pyamg, solver_iter_mgcg
 from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
 from scipy.sparse.linalg import LinearOperator, minres
 from skfem.models.poisson import *
@@ -19,10 +19,11 @@ exp = np.exp
 
 tol = 1e-8
 intorder = 5
+solver_type = 'mgcg'
 refine_time = 6
-epsilon_range = 4
+epsilon_range = 5
 zero_ep = False
-element_type = 'P1'
+element_type = 'P2'
 sigma = 5
 penalty = True
 example = 'ex3'
@@ -52,6 +53,7 @@ print('=======Arguments=======')
 print('example:\t{}'.format(example))
 print('penalty:\t{}'.format(penalty))
 print('element_type:\t{}'.format(element_type))
+print('solver_type:\t{}'.format(solver_type))
 print('tol:\t{}'.format(tol))
 print('intorder:\t{}'.format(intorder))
 print('refine_time:\t{}'.format(refine_time))
@@ -174,16 +176,16 @@ def get_D2uError(basis, u):
                 (dduh[1][1] - duyy)**2 + (dduh[1][0] - duyx)**2) * dx))
 
 
-def solve_problem1(m, element_type='P1'):
+def solve_problem1(m, element_type='P1', solver_type='pcg'):
     '''
-    old solver for problem 1, can't read f 
+    switching to mgcg solver for problem 1
     '''
     if element_type == 'P1':
         element = {'w': ElementTriP1(), 'u': ElementTriMorley()}
     elif element_type == 'P2':
         element = {'w': ElementTriP2(), 'u': ElementTriMorley()}
     else:
-        raise Exception("The element not supported")
+        raise Exception("Element not supported")
 
     basis = {
         variable: InteriorBasis(m, e, intorder=intorder)
@@ -193,19 +195,33 @@ def solve_problem1(m, element_type='P1'):
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()),
-               solver=solver_iter_krylov(Precondition=True, tol=tol))
+    if solver_type == 'amg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
+    elif solver_type == 'pcg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
+    else:
+        raise Exception("Solver not supported")
 
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
-    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])),
-                solver=solver_iter_krylov(Precondition=True, tol=tol))  # cg
+
+    if solver_type == 'amg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_pyamg(tol=tol))
+    elif solver_type == 'pcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg(tol=tol))
+    else:
+        raise Exception("Solver not supported")
+
     return uh0, basis
 
 
-def solve_problem2(m, element_type='P1'):
+def solve_problem2(m, element_type='P1', solver_type='pcg'):
     '''
-    old solver
+    adding mgcg solver for problem 2
     '''
     if element_type == 'P1':
         element = {'w': ElementTriP1(), 'u': ElementTriMorley()}
@@ -222,8 +238,14 @@ def solve_problem2(m, element_type='P1'):
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()),
-               solver=solver_iter_krylov(Precondition=True, tol=tol))
+    if solver_type == 'amg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
+    elif solver_type == 'pcg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
+    else:
+        raise Exception("Solver not supported")
 
     fbasis = FacetBasis(m, element['u'])
 
@@ -232,12 +254,20 @@ def solve_problem2(m, element_type='P1'):
     p3 = asm(penalty_3, fbasis)
     P = p1 + p2 + p3
 
-    K2 = epsilon**2 * asm(a_load, basis['u']) + \
-        epsilon**2 * P + asm(b_load, basis['u'])
+    K2 = epsilon**2 * asm(a_load, basis['u']) + epsilon**2 * P + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
-    uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(
-        basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+
+    if solver_type == 'amg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(basis['u'])), solver=solver_iter_pyamg(tol=tol))
+    elif solver_type == 'pcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(basis['u'])), solver=solver_iter_mgcg(tol=tol))
+    else:
+        raise Exception("Solver not supported")
+    
     return uh0, basis
+
 
 if example == 'ex1':
 
@@ -479,9 +509,9 @@ for j in range(epsilon_range):
         m.refine()
         
         if penalty:
-            uh0, basis = solve_problem2(m, element_type)
+            uh0, basis = solve_problem2(m, element_type, solver_type)
         else:
-            uh0, basis = solve_problem1(m, element_type)
+            uh0, basis = solve_problem1(m, element_type, solver_type)
 
         U = basis['u'].interpolate(uh0).value
 

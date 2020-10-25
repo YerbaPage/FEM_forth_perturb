@@ -2,12 +2,13 @@
 example:	ex3
 penalty:	False
 element_type:	P1
+solver_type:	mgcg
 tol:	1e-08
 intorder:	5
 refine_time:	6
-epsilon_range:	4
+epsilon_range:	5
 sigma:	5
-save_path:	log/ex3_P1_nopen_2020-10-25_11-00-32
+save_path:	log/ex3_P1_nopen_2020-10-25_16-34-58
 =======Results=======
 epsilon = 1
   h    L2u   H1u   H2u   epu
@@ -37,5 +38,12 @@ epsilon = 1e-06
 2^-4  1.51  0.55  -0.49  0.52
 2^-5  1.51  0.52  -0.49  0.50
 2^-6  1.50  0.51  -0.50  0.50
-======= Errors saved in: log/ex3_P1_nopen_2020-10-25_11-00-32.csv ==========
-Total Time Cost 4.86 s
+epsilon = 1e-08
+  h    L2u   H1u   H2u   epu
+2^-2  1.74  0.81  -0.20  0.71
+2^-3  1.57  0.65  -0.46  0.60
+2^-4  1.51  0.55  -0.49  0.52
+2^-5  1.51  0.52  -0.49  0.50
+2^-6  1.50  0.51  -0.50  0.50
+======= Errors saved in: log/ex3_P1_nopen_2020-10-25_16-34-58.csv ==========
+Total Time Cost 7.08 s
