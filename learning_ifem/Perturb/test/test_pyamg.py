@@ -19,12 +19,12 @@ exp = np.exp
 
 tol = 1e-8
 intorder = 4
-solver_type = 'pcg'
+solver_type = 'amg'
 refine_time = 6
 epsilon_range = 4
 element_type = 'P1'
 sigma = 5
-penalty = True
+penalty = False
 example = 'ex1'
 
 # end of parameters

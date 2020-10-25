@@ -153,7 +153,7 @@ def solver_iter_pyamg(verbose: Optional[bool] = False,
         import pyamg
         ml = pyamg.ruge_stuben_solver(A)
         # print(ml)
-        x = ml.solve(b, tol=1e-10)
+        x = ml.solve(b, tol=1e-10, maxiter=10000, callback=callback)
         return x, np.linalg.norm(b-A*x)
 
     def callback(x):
@@ -214,6 +214,7 @@ def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
+            # print(info)
             print(f"{krylov.__name__} converged to "
                   + f"tol={kwargs.get('tol', 'default')} and "
                   + f"atol={kwargs.get('atol', 'default')}")
