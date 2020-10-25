@@ -1,6 +1,6 @@
 from skfem import *
 import numpy as np
-from skfem.utils import solver_iter_krylov, solver_iter_pyamg
+from skfem.utils import solver_iter_krylov, solver_iter_pyamg, solver_iter_mgcg
 from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
 from scipy.sparse.linalg import LinearOperator, minres
 from skfem.models.poisson import *
@@ -24,7 +24,7 @@ refine_time = 6
 epsilon_range = 4
 element_type = 'P1'
 sigma = 5
-penalty = True
+penalty = False
 example = 'ex1'
 
 # end of parameters
