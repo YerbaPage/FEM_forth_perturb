@@ -192,11 +192,11 @@ def solve_problem1(m, element_type='P1', solver_type='pcg'):
     else:
         raise Exception("Solver not supported")
         
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=my_solver)
+    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
 
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
-    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=my_solver)
+    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
     return uh0, basis
 
 def solve_problem2(m, element_type='P1', solver_type='pcg'):
