@@ -18,13 +18,13 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 5
-solver_type = 'mgcg'
+intorder = 4
+solver_type = 'pcg'
 refine_time = 6
 epsilon_range = 4
 element_type = 'P1'
 sigma = 5
-penalty = False
+penalty = True
 example = 'ex1'
 
 # end of parameters
@@ -210,7 +210,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg'):
 
 def solve_problem2(m, element_type='P1', solver_type='pcg'):
     '''
-    adding pyamg solver for problem 2
+    adding mgcg solver for problem 2
     '''
     if element_type == 'P1':
         element = {'w': ElementTriP1(), 'u': ElementTriMorley()}
@@ -231,6 +231,8 @@ def solve_problem2(m, element_type='P1', solver_type='pcg'):
         wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
         wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
 
@@ -248,6 +250,8 @@ def solve_problem2(m, element_type='P1', solver_type='pcg'):
         uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
         uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    elif solver_type == 'mgcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
     
