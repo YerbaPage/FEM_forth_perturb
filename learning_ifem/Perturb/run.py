@@ -21,10 +21,11 @@ tol = 1e-8
 intorder = 5
 refine_time = 6
 epsilon_range = 4
+zero_ep = True
 element_type = 'P1'
 sigma = 5
-penalty = True
-example = 'ex1'
+penalty = False
+example = 'ex3'
 
 # end of parameters
 
@@ -464,7 +465,7 @@ time_start = time.time()
 
 df_list = []
 for j in range(epsilon_range):
-    epsilon = 1 * 10**(-j*2) * 0
+    epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
     ep = epsilon
     L2_list = []
     Du_list = []
