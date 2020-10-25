@@ -19,12 +19,12 @@ exp = np.exp
 
 tol = 1e-8
 intorder = 5
-solver_type = 'pcg'
+solver_type = 'amg'
 refine_time = 6
 epsilon_range = 4
 element_type = 'P1'
 sigma = 5
-penalty = False
+penalty = True
 example = 'ex1'
 
 # end of parameters
@@ -224,13 +224,11 @@ def solve_problem2(m, element_type='P1', solver_type='pcg'):
     f1 = asm(f_load, basis['w'])
 
     if solver_type == 'amg':
-        solver = solver_iter_pyamg(tol=tol)
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
-        solver = solver_iter_krylov(Precondition=True, tol=tol)
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
     else:
         raise Exception("Solver not supported")
-
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver)
 
     fbasis = FacetBasis(m, element['u'])
 
@@ -241,7 +239,14 @@ def solve_problem2(m, element_type='P1', solver_type='pcg'):
 
     K2 = epsilon**2 * asm(a_load, basis['u']) + epsilon**2 * P + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
-    uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(basis['u'])), solver=solver)
+
+    if solver_type == 'amg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_pyamg(tol=tol))
+    elif solver_type == 'pcg':
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+    else:
+        raise Exception("Solver not supported")
+    
     return uh0, basis
 
 def solve_problem1_v1(m, element_type='P1'):
