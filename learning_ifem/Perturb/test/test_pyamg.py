@@ -17,7 +17,7 @@ exp = np.exp
 
 # parameters
 
-tol = 1e-8
+tol = 1e-10
 intorder = 5
 solver_type = 'pcg'
 refine_time = 6
@@ -186,18 +186,17 @@ def solve_problem1(m, element_type='P1', solver_type='pcg'):
     f1 = asm(f_load, basis['w'])
 
     if solver_type == 'amg':
-        solver = solver_iter_pyamg(tol=tol)
+        my_solver = solver_iter_pyamg(tol=tol)
     elif solver_type == 'pcg':
-        solver = solver_iter_krylov(Precondition=True, tol=tol)
+        my_solver = solver_iter_krylov(Precondition=True, tol=tol)
     else:
         raise Exception("Solver not supported")
         
-
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver)
+    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=my_solver)
 
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
-    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver)
+    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=my_solver)
     return uh0, basis
 
 def solve_problem2(m, element_type='P1', solver_type='pcg'):
