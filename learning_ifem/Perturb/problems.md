@@ -7,4 +7,6 @@
 - [ ] 忘记乘上另一个基函数时的 1/3
 - [ ] 边界惩罚推导
 - [ ] dof loc
+- [ ] tol
+- [ ] smoother (GS point smoother)
 
