@@ -9,4 +9,5 @@
 - [ ] dof loc
 - [ ] tol
 - [ ] smoother (GS point smoother)
+- [ ] Stokes 正负号的问题
 
