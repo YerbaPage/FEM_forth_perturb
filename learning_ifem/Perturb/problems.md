@@ -4,10 +4,9 @@
 - [x] morley for poisson 
 - [x] examples to use
 - [x] github 的 reply
-- [ ] 忘记乘上另一个基函数时的 1/3
 - [ ] 边界惩罚推导
 - [ ] dof loc
-- [ ] tol
 - [ ] smoother (GS point smoother)
 - [ ] Stokes 正负号的问题
-
+- [ ] einsum
+- [ ] @ method
