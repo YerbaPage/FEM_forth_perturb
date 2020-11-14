@@ -113,7 +113,7 @@ def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Opti
         kwargs['M'] = ml.aspreconditioner() # params to be developed
         
         sol, info, iter= krylov(A, b, **{'callback': callback, **kwargs})
-        print('MGCG Total interation steps:', iter)
+        print('mgcg total interation steps:', iter)
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
@@ -250,7 +250,7 @@ def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
             kwargs['M'] = build_pc_diag(A)
         # print(kwargs['M'])
         sol, info, iter = krylov(A, b, **{'callback': callback, **kwargs})
-        print('PCG Total interation steps:', iter)
+        print(krylov.__name__, 'total interation steps:', iter)
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
