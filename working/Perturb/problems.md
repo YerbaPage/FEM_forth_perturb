@@ -10,3 +10,4 @@
 - [ ] Stokes 正负号的问题
 - [ ] einsum
 - [ ] @ method
+- [ ] pyamg.smoothed_aggregation_solver(A) 类型
