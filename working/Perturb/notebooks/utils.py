@@ -84,6 +84,46 @@ def solver_direct_scipy(**kwargs) -> LinearSolver:
         return spl.spsolve(A, b, **kwargs)
     return solver
 
+def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Optional[bool] = False, **kwargs) -> LinearSolver:
+    """MGCG iterative linear solver.
+
+    Parameters
+    ----------
+    krylov
+        A Krylov iterative linear solver, like, and by default,
+        :func:`scipy.sparse.linalg.cg`
+    verbose
+        If True, print the norm of the iterate.
+
+    Returns
+    -------
+    LinearSolver
+        A solver function that can be passed to :func:`solve`.
+    And prints num of iterations
+    """
+    def callback(x):
+        if verbose:
+            print(np.linalg.norm(x))
+
+    def solver(A, b, **solve_time_kwargs):
+        kwargs.update(solve_time_kwargs)
+
+        import pyamg
+        ml = pyamg.ruge_stuben_solver(A)
+        kwargs['M'] = ml.aspreconditioner() # params to be developed
+        
+        sol, info, iter= krylov(A, b, **{'callback': callback, **kwargs})
+        print('MGCG Total interation steps:', iter)
+        if info > 0:
+            warnings.warn("Convergence not achieved!")
+        elif info == 0 and verbose:
+            print(f"{krylov.__name__} converged to "
+                  + f"tol={kwargs.get('tol', 'default')} and "
+                  + f"atol={kwargs.get('atol', 'default')}")
+        return sol
+
+    return solver
+
 def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
                        **kwargs) -> LinearSolver:
@@ -114,7 +154,7 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
         ml = pyamg.ruge_stuben_solver(A)
         kwargs['M'] = ml.aspreconditioner() # params to be developed
         
-        sol, info = krylov(A, b, **{'callback': callback, **kwargs})
+        sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
@@ -169,6 +209,58 @@ def solver_iter_pyamg(verbose: Optional[bool] = False,
 
     return solver
 
+def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
+                       verbose: Optional[bool] = False,
+                       **kwargs) -> LinearSolver:
+    """Krylov-subspace iterative linear solver.
+
+    Parameters
+    ----------
+    krylov
+        A Krylov iterative linear solver, like, and by default,
+        :func:`scipy.sparse.linalg.cg`
+    verbose
+        If True, print the norm of the iterate.
+
+    Any remaining keyword arguments are passed on to the solver, in particular
+    tol and atol, the tolerances, maxiter, and M, the preconditioner.  If the
+    last is omitted, a diagonal preconditioner is supplied using
+    :func:`skfem.utils.build_pc_diag`.
+
+    Returns
+    -------
+    LinearSolver
+        A solver function that can be passed to :func:`solve`.
+    And prints num of iters
+    """
+    def callback(x):
+        if verbose:
+            print(np.linalg.norm(x))
+
+    def solver(A, b, **solve_time_kwargs):
+        kwargs.update(solve_time_kwargs)
+        pre = False
+        if 'Precondition' in kwargs:
+            if kwargs['Precondition'] == True:
+                pre = True
+            kwargs.pop('Precondition')
+        if 'M' not in kwargs and pre:
+            # print('build_pc_diag(A) enabled')
+            # pass
+            kwargs['M'] = build_pc_diag(A)
+        # print(kwargs['M'])
+        sol, info, iter = krylov(A, b, **{'callback': callback, **kwargs})
+        print('PCG Total interation steps:', iter)
+        if info > 0:
+            warnings.warn("Convergence not achieved!")
+        elif info == 0 and verbose:
+            # print(info)
+            print(f"{krylov.__name__} converged to "
+                  + f"tol={kwargs.get('tol', 'default')} and "
+                  + f"atol={kwargs.get('atol', 'default')}")
+        return sol
+
+    return solver
 
 def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
@@ -210,7 +302,7 @@ def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
             # pass
             kwargs['M'] = build_pc_diag(A)
         # print(kwargs['M'])
-        sol, info = krylov(A, b, **{'callback': callback, **kwargs})
+        sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
