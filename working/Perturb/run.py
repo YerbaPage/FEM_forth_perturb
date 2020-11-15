@@ -18,7 +18,7 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 6
+intorder = 19
 solver_type = 'mgcg'
 refine_time = 6
 epsilon_range = 7
