@@ -18,15 +18,15 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 5
+intorder = 6
 solver_type = 'mgcg'
 refine_time = 6
-epsilon_range = 5
+epsilon_range = 7
 zero_ep = False
-element_type = 'P2'
+element_type = 'P1'
 sigma = 5
 penalty = True
-example = 'ex3'
+example = 'ex2'
 
 # end of parameters
 
@@ -495,7 +495,7 @@ time_start = time.time()
 
 df_list = []
 for j in range(epsilon_range):
-    epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
+    epsilon = 1 * 10**(-j) * (1 - zero_ep)
     ep = epsilon
     L2_list = []
     Du_list = []
