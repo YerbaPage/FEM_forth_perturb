@@ -1,0 +1,30 @@
+=======Arguments=======
+example:	ex3
+penalty:	False
+element_type:	P2
+solver_type:	mgcg
+tol:	1e-08
+intorder:	6
+refine_time:	7
+epsilon_range:	2
+sigma:	5
+save_path:	log/ex3_P2_nopen_2020-11-16_13-49-11
+=======Results=======
+epsilon = 0
+  h    L2u   H1u   H2u   epu
+2^-2  1.59  0.67  -0.28  0.56
+2^-3  1.56  0.58  -0.41  0.52
+2^-4  1.52  0.53  -0.47  0.51
+2^-5  1.50  0.52  -0.49  0.50
+2^-6  1.50  0.51  -0.49  0.50
+2^-7  1.50  0.50  -0.50  0.50
+epsilon = 0.0
+  h    L2u   H1u   H2u   epu
+2^-2  1.59  0.67  -0.28  0.56
+2^-3  1.56  0.58  -0.41  0.52
+2^-4  1.52  0.53  -0.47  0.51
+2^-5  1.50  0.52  -0.49  0.50
+2^-6  1.50  0.51  -0.49  0.50
+2^-7  1.50  0.50  -0.50  0.50
+======= Errors saved in: log/ex3_P2_nopen_2020-11-16_13-49-11.csv ==========
+Total Time Cost 33.74 s
