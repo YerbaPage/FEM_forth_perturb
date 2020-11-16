@@ -11,3 +11,4 @@
 - [ ] einsum
 - [ ] @ method
 - [ ] pyamg.smoothed_aggregation_solver(A) 类型
+- [ ] amg tol
