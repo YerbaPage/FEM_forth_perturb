@@ -491,7 +491,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
     len_condensed = K.shape[0] - C.shape[0]
 
     multilevel_solver = pyamg.ruge_stuben_solver(K[:len_condensed, :len_condensed])
-    M11_op = multilevel_solver.aspreconditioner()
+    M11_op = multilevel_solver.aspreconditioner(ifaccel=True)
 
     invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha
 
