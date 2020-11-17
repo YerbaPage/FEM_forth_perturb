@@ -24,15 +24,50 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 6
+intorder = 5
 solver_type = 'mgcg'
-refine_time = 5
-epsilon_range = 4
+refine_time = 7
+epsilon_range = 1
 zero_ep = False
 element_type = 'P1'
 sigma = 5
-penalty = True
+penalty = False
 example = 'ex2'
+alpha = 0.5
+gmres_tol = 1e-8
+
+save_path = 'log/test_solver_' + example + '_' + element_type + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+
+# output to txt 
+class Logger(object):
+    def __init__(self, filename=save_path+'.txt', stream=sys.stdout):
+	    self.terminal = stream
+	    self.log = open(filename, 'a')
+
+    def write(self, message):
+	    self.terminal.write(message)
+	    self.log.write(message)
+
+    def flush(self):
+	    pass
+
+sys.stdout = Logger(save_path+'.txt', sys.stdout)
+time_start = time.time()
+
+
+print('=======Arguments=======')
+print('example:\t{}'.format(example))
+print('penalty:\t{}'.format(penalty))
+print('element_type:\t{}'.format(element_type))
+print('solver_type:\t{}'.format(solver_type))
+print('gmres_tol:\t{}'.format(gmres_tol))
+print('intorder:\t{}'.format(intorder))
+print('refine_time:\t{}'.format(refine_time))
+print('epsilon_range:\t{}'.format(epsilon_range))
+print('sigma:\t{}'.format(sigma))
+print('save_path:\t{}'.format(save_path))
+print('=======Results=======')
+
 
 @BilinearForm
 def invmass(u, v, w):
@@ -407,19 +442,6 @@ elif example == 'ex3':
 else:
     raise Exception('Example not supported')
 
-tol = 1e-8
-intorder = 5
-solver_type = 'mgcg'
-refine_time = 7
-epsilon_range = 1
-zero_ep = False
-element_type = 'P1'
-sigma = 5
-penalty = False
-example = 'ex2'
-alpha = 0.5
-gmres_tol = 1e-8
-
 def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
     '''
     separated without BTMB
@@ -483,7 +505,9 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     M = LinearOperator(K.shape, matvec)
 
+    gmres_time_start = time.time()
     phip_minres_full_gmres = solve(K, f, solver=solver_iter_krylov_iter(spl.gmres, M=M, tol=gmres_tol))
+    gmres_time_end = time.time()
 
     out_phip = np.zeros(K3.shape[0])
     out_phip[I_withp] = phip_minres_full_gmres
@@ -499,6 +523,8 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
     
     uh0 = solve(*condense(K4, f4, D=easy_boundary(basis4)), solver=solver_iter_mgcg_iter(tol=tol))
 
+    print('GMRES Time Cost {:.3e} s'.format(gmres_time_end-gmres_time_start))
+    print('dofs:', K.shape[0])
     return uh0, {'u' :basis4}
 
 # new one with btinvb
@@ -651,3 +677,6 @@ for j in range(epsilon_range):
                 H2s[i + 1],
                 epus[i + 1]))
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
+
+time_end = time.time()
+print('Total Time Cost {:.3f} s'.format(time_end-time_start))
