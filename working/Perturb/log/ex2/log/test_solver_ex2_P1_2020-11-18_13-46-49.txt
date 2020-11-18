@@ -1,0 +1,96 @@
+=======Arguments=======
+example:	ex2
+penalty:	False
+element_type:	P1
+solver_type:	mgcg
+gmres_tol:	1e-08
+intorder:	5
+refine_time:	9
+epsilon_range:	1
+sigma:	5
+save_path:	log/test_solver_ex2_P1_2020-11-18_13-46-49
+=======Results=======
+epsilon = 1
+mgcg total interation steps: 1
+mgcg total interation steps: 1
+gmres total interation steps: 16
+mgcg total interation steps: 1
+GMRES Time Cost 1.094e-02 s
+dofs: 24
+--------------------
+mgcg total interation steps: 1
+mgcg total interation steps: 4
+gmres total interation steps: 31
+mgcg total interation steps: 4
+GMRES Time Cost 2.039e-02 s
+dofs: 112
+--------------------
+mgcg total interation steps: 5
+mgcg total interation steps: 5
+gmres total interation steps: 38
+mgcg total interation steps: 5
+GMRES Time Cost 2.948e-02 s
+dofs: 480
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 7
+gmres total interation steps: 40
+mgcg total interation steps: 7
+GMRES Time Cost 4.545e-02 s
+dofs: 1984
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 10
+gmres total interation steps: 46
+mgcg total interation steps: 10
+GMRES Time Cost 7.264e-02 s
+dofs: 8064
+--------------------
+mgcg total interation steps: 7
+mgcg total interation steps: 11
+gmres total interation steps: 46
+mgcg total interation steps: 11
+GMRES Time Cost 3.064e-01 s
+dofs: 32512
+--------------------
+mgcg total interation steps: 7
+mgcg total interation steps: 15
+gmres total interation steps: 49
+mgcg total interation steps: 14
+GMRES Time Cost 1.439e+00 s
+dofs: 130560
+--------------------
+mgcg total interation steps: 9
+mgcg total interation steps: 18
+gmres total interation steps: 53
+mgcg total interation steps: 17
+GMRES Time Cost 7.650e+00 s
+dofs: 523264
+--------------------
+mgcg total interation steps: 9
+mgcg total interation steps: 21
+gmres total interation steps: 55
+mgcg total interation steps: 21
+GMRES Time Cost 3.076e+01 s
+dofs: 2095104
+--------------------
+  h    L2u   H1u   H2u   epu
+2^-2  1.11  1.16  0.70  0.66
+2^-2  1.36597e-04  9.74774e-04  1.55359e-02  1.45852e-02
+2^-3  1.56  1.58  0.89  0.86
+2^-3  4.62730e-05  3.27119e-04  8.37499e-03  8.05277e-03
+2^-4  1.85  1.82  0.98  0.95
+2^-4  1.28699e-05  9.24931e-05  4.25597e-03  4.16424e-03
+2^-5  1.95  1.94  1.00  0.99
+2^-5  3.32343e-06  2.40764e-05  2.12622e-03  2.10225e-03
+2^-6  1.99  1.98  1.00  1.00
+2^-6  8.38135e-07  6.08677e-06  1.05984e-03  1.05377e-03
+2^-7  2.00  2.00  1.00  1.00
+2^-7  2.10001e-07  1.52608e-06  5.28742e-04  5.27217e-04
+2^-8  2.00  2.00  1.00  1.00
+2^-8  5.25298e-08  3.81798e-07  2.64032e-04  2.63651e-04
+2^-9  2.00  2.00  1.00  1.00
+2^-9  1.31343e-08  9.54670e-08  1.31926e-04  1.31831e-04
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Total Time Cost 144.579 s
