@@ -26,17 +26,17 @@ exp = np.exp
 tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
-refine_time = 10
-epsilon_range = 1
+refine_time = 7
+epsilon_range = 6
 zero_ep = False
 element_type = 'P1'
 sigma = 5
 penalty = False
-example = 'ex2'
+example = 'ex1'
 alpha = 0.5
 gmres_tol = 1e-8
 
-save_path = 'log/test_solver_' + example + '_' + element_type + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+save_path = 'log/test_solver_original' + example + '_' + element_type + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 # output to txt 
 class Logger(object):
@@ -529,6 +529,127 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
     print('dofs:', K.shape[0])
     return uh0, {'u' :basis4}
 
+def easy_boundary(basis):
+    '''
+    Input basis
+    ----------------
+    Return D for boundary conditions
+    '''
+
+    dofs = basis.find_dofs({
+        'left': m.facets_satisfying(lambda x: x[0] == 0),
+        'right': m.facets_satisfying(lambda x: x[0] == 1),
+        'top': m.facets_satisfying(lambda x: x[1] == 1),
+        'buttom': m.facets_satisfying(lambda x: x[1] == 0)
+    })
+
+    D = np.concatenate((dofs['left'].nodal['u'], dofs['right'].nodal['u'],
+                        dofs['top'].nodal['u'], dofs['buttom'].nodal['u'],
+                        dofs['left'].facet['u_n'], dofs['right'].facet['u_n'],
+                        dofs['top'].facet['u_n'], dofs['buttom'].facet['u_n']))
+    return D
+
+
+@BilinearForm
+def a_load(u, v, w):
+    '''
+    for $a_{h}$
+    '''
+    return ddot(dd(u), dd(v))
+
+
+@BilinearForm
+def b_load(u, v, w):
+    '''
+    for $b_{h}$
+    '''
+    return dot(grad(u), grad(v))
+
+
+@BilinearForm
+def wv_load(u, v, w):
+    '''
+    for $(\nabla \chi_{h}, \nabla_{h} v_{h})$
+    '''
+    return dot(grad(u), grad(v))
+
+
+@BilinearForm
+def penalty_1(u, v, w):
+    return ddot(-dd(u), prod(w.n, w.n)) * dot(grad(v), w.n)
+
+
+@BilinearForm
+def penalty_2(u, v, w):
+    return ddot(-dd(v), prod(w.n, w.n)) * dot(grad(u), w.n)
+
+
+@BilinearForm
+def penalty_3(u, v, w):
+    return (sigma / w.h) * dot(grad(u), w.n) * dot(grad(v), w.n)
+
+
+@BilinearForm
+def laplace(u, v, w):
+    '''
+    for $(\nabla w_{h}, \nabla \chi_{h})$
+    '''
+    return dot(grad(u), grad(v))
+
+
+@Functional
+def L2uError(w):
+    x, y = w.x
+    return (w.w - exact_u(x, y))**2
+
+
+def get_DuError(basis, u):
+    duh = basis.interpolate(u).grad
+    x = basis.global_coordinates().value
+    dx = basis.dx  # quadrature weights
+    dux, duy = dexact_u(x[0], x[1])
+    return np.sqrt(np.sum(((duh[0] - dux)**2 + (duh[1] - duy)**2) * dx))
+
+
+def get_D2uError(basis, u):
+    dduh = basis.interpolate(u).hess
+    x = basis.global_coordinates(
+    ).value  # coordinates of quadrature points [x, y]
+    dx = basis.dx  # quadrature weights
+    duxx, duxy, duyx, duyy = ddexact(x[0], x[1])
+    return np.sqrt(
+        np.sum(((dduh[0][0] - duxx)**2 + (dduh[0][1] - duxy)**2 +
+                (dduh[1][1] - duyy)**2 + (dduh[1][0] - duyx)**2) * dx))
+
+def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
+    '''
+    switching to mgcg solver for problem 1
+    '''
+    if element_type == 'P1':
+        element = {'w': ElementTriP1(), 'u': ElementTriMorley()}
+    elif element_type == 'P2':
+        element = {'w': ElementTriP2(), 'u': ElementTriMorley()}
+    else:
+        raise Exception("Element not supported")
+
+    basis = {
+        variable: InteriorBasis(m, e, intorder=intorder)
+        for variable, e in element.items()
+    }  # intorder: integration order for quadrature
+
+    K1 = asm(laplace, basis['w'])
+    f1 = asm(f_load, basis['w'])
+
+    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg_iter(tol=tol))
+    
+    K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
+    f2 = asm(wv_load, basis['w'], basis['u']) * wh
+
+
+    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol))
+
+    return uh0, basis
+
 
 df_list = []
 for j in range(epsilon_range):
@@ -547,7 +668,7 @@ for j in range(epsilon_range):
     for i in range(1, refine_time+1):
         
         m.refine()
-        uh0, basis = solve_problem3(m, element_type, solver_type, tol=tol)
+        uh0, basis = solve_problem1(m, element_type, solver_type, tol=tol)
         print('--------------------')
 
         U = basis['u'].interpolate(uh0).value
