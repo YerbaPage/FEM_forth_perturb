@@ -8,7 +8,7 @@ intorder:	5
 refine_time:	7
 epsilon_range:	6
 sigma:	5
-save_path:	log/test_solver_ex1_P1_2020-11-19_00-00-45
+save_path:	log/test_solver_originalex1_P1_2020-11-19_00-27-50
 =======Results=======
 epsilon = 1
 mgcg total interation steps: 1
@@ -232,4 +232,4 @@ mgcg total interation steps: 10
 2^-7  3.31247e-05  1.08821e-03  3.69953e-01  1.05509e-03
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Total Time Cost 90.159 s
+Total Time Cost 63.943 s

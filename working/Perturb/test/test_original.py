@@ -26,8 +26,8 @@ exp = np.exp
 tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
-refine_time = 7
-epsilon_range = 6
+refine_time = 8
+epsilon_range = 1
 zero_ep = False
 element_type = 'P1'
 sigma = 5
@@ -36,7 +36,7 @@ example = 'ex1'
 alpha = 0.5
 gmres_tol = 1e-8
 
-save_path = 'log/test_solver_original' + example + '_' + element_type + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+save_path = 'log/test_solver_original' + example + '_' + str(refine_time) + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 # output to txt 
 class Logger(object):
