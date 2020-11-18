@@ -1,0 +1,15 @@
+=======Arguments=======
+example:	ex2
+penalty:	False
+element_type:	P1
+solver_type:	mgcg
+gmres_tol:	1e-08
+intorder:	5
+refine_time:	7
+epsilon_range:	1
+sigma:	5
+save_path:	log/test_solver_ex2_P1_2020-11-17_17-58-36
+=======Results=======
+epsilon = 1
+mgcg total interation steps: 1
+mgcg total interation steps: 1

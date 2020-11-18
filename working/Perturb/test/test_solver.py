@@ -490,13 +490,15 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     len_condensed = K.shape[0] - C.shape[0]
 
-    multilevel_solver = pyamg.ruge_stuben_solver(K[:len_condensed, :len_condensed])
-    M11_op = multilevel_solver.aspreconditioner(ifaccel=True)
-
     invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha
 
     I = I_withp[:-C.shape[0]]
     B_reshaped = B.T[I].T
+
+    # multilevel_solver = pyamg.ruge_stuben_solver(K[:len_condensed, :len_condensed])
+
+    multilevel_solver = pyamg.ruge_stuben_solver(K[:len_condensed, :len_condensed])
+    M11_op = multilevel_solver.aspreconditioner()
 
     def matvec(b):
         u2 = invC * b[len_condensed:]
@@ -526,92 +528,6 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
     print('GMRES Time Cost {:.3e} s'.format(gmres_time_end-gmres_time_start))
     print('dofs:', K.shape[0])
     return uh0, {'u' :basis4}
-
-# new one with btinvb
-
-# B.T*M*B
-
-# def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
-#     '''
-#     cg accel
-#     '''
-    
-#     # equation 1
-    
-#     if element_type == 'P1':
-#         element1 = ElementTriP1()
-#     elif element_type == 'P2':
-#         element1 = ElementTriP2()
-#     else:
-#         raise Exception("Element not supported")
-        
-#     basis1 = InteriorBasis(m, element1, intorder=intorder)
-
-#     K1 = asm(laplace, basis1)
-#     f1 = asm(f_load, basis1)
-
-#     wh = solve(*condense(K1, f1, D=basis1.find_dofs()), solver=solver_iter_mgcg(tol=tol))
-    
-#     # equation 2
-    
-#     element2 = ElementTriMorley()
-#     basis2 = InteriorBasis(m, element2, intorder=intorder)
-
-#     K2 = asm(zv_load, basis2)
-#     f2 = asm(laplace, basis1, basis2) * wh
-
-#     zh = solve(*condense(K2, f2, D=easy_boundary(basis2)), solver=solver_iter_mgcg(tol=tol))
-
-#     # equation 3
-    
-#     element3 = {'phi': ElementVectorH1(ElementTriCR()), 'p': ElementTriP0()}
-#     basis3 = {variable: InteriorBasis(m, e, intorder=intorder) for variable, e in element3.items()}  
-
-#     A = asm(phipsi_load1, basis3['phi']) + epsilon**2 * asm(phipsi_load2, basis3['phi'])
-#     B = asm(phiq_load, basis3['phi'], basis3['p'])
-#     C = asm(mass, basis3['p'])
-#     F1 = asm(zpsi_load, basis2, basis3['phi']) * zh
-
-#     f3 = np.concatenate([F1, np.zeros(B.shape[0])])
-#     K3 = bmat([[A, -B.T], [-B, C * 0]], 'csr')
-    
-#     K, f, _, I_withp = condense(K3, f3, D=basis3['phi'].find_dofs())
-
-#     len_condensed = K.shape[0] - C.shape[0]
-
-#     invC = sparse.eye(C.shape[0]) * C.shape[0]
-
-#     I = I_withp[:-C.shape[0]]
-#     B_reshaped = B.T[I].T
-
-#     multilevel_solver = pyamg.ruge_stuben_solver(K[:len_condensed, :len_condensed] + B_reshaped.T * invC * B_reshaped)
-#     M11_op = multilevel_solver.aspreconditioner(ifaccel=False)
-    
-#     def matvec(b):
-#         u2 = invC * b[len_condensed:]
-#         u1 = M11_op.matvec(b[:len_condensed] - B_reshaped.T * u2)
-#         return np.append(u1, -invC * B_reshaped * u1 - u2)
-
-#     M = LinearOperator(K.shape, matvec)
-
-#     phip_minres_full_gmres = solve(K, f, solver=solver_iter_krylov_iter(spl.gmres, M=M, tol=gmres_tol))
-
-#     out_phip = np.zeros(K3.shape[0])
-#     out_phip[I_withp] = phip_minres_full_gmres
-#     phih, ph3 = np.split(out_phip, [A.shape[0]])
-    
-#     # equation 4
-    
-#     element4 = ElementTriMorley()
-#     basis4 = InteriorBasis(m, element4, intorder=intorder)
-
-#     K4 = asm(uchi_load, basis4)
-#     f4 = asm(phichi_load, basis3['phi'], basis4) * phih
-    
-#     uh0 = solve(*condense(K4, f4, D=easy_boundary(basis4)), solver=solver_iter_mgcg(tol=tol))
-    
-#     return uh0, {'u' :basis4}
-
 
 
 df_list = []
