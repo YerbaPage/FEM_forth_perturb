@@ -490,7 +490,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     len_condensed = K.shape[0] - C.shape[0]
 
-    invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha
+    invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha * epsilon**2
 
     I = I_withp[:-C.shape[0]]
     B_reshaped = B.T[I].T
@@ -533,7 +533,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 df_list = []
 for j in range(epsilon_range):
     # epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
-    epsilon = 1 * 10**(-j) * (1 - zero_ep)
+    epsilon = 1 * 10**(-j) * (1 - zero_ep) 
     ep = epsilon
     L2_list = []
     Du_list = []
