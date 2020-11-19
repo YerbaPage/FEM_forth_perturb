@@ -23,11 +23,11 @@ exp = np.exp
 
 # parameters
 
-tol = 1e-6
+tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
-refine_time = 8
-epsilon_range = 6
+refine_time = 10
+epsilon_range = 2
 zero_ep = False
 element_type = 'P1'
 sigma = 5
@@ -625,6 +625,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
     '''
     switching to mgcg solver for problem 1
     '''
+    mgcg_time_start = time.time()
     if element_type == 'P1':
         element = {'w': ElementTriP1(), 'u': ElementTriMorley()}
     elif element_type == 'P2':
@@ -645,16 +646,17 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
 
-
     uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol, maxiter=1000))
-
+    
+    mgcg_time_end = time.time()
+    print('MGCG Time Cost {:.3e} s'.format(mgcg_time_end-mgcg_time_start))
     return uh0, basis
 
 
 df_list = []
 for j in range(epsilon_range):
     # epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
-    epsilon = 1 * 10**(-j) * (1 - zero_ep)
+    epsilon = 1 * 10**(-j) * (1 - zero_ep) *1e-2
     ep = epsilon
     L2_list = []
     Du_list = []
@@ -715,5 +717,7 @@ for j in range(epsilon_range):
                 epus[i + 1]))
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
 
+result = df_list[0].append(df_list[1:])
+result.to_csv(save_path+'.csv')
 time_end = time.time()
 print('Total Time Cost {:.3f} s'.format(time_end-time_start))
