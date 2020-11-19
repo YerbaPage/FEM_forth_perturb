@@ -23,11 +23,11 @@ exp = np.exp
 
 # parameters
 
-tol = 1e-8
+tol = 1e-6
 intorder = 5
 solver_type = 'mgcg'
 refine_time = 8
-epsilon_range = 1
+epsilon_range = 6
 zero_ep = False
 element_type = 'P1'
 sigma = 5
@@ -60,7 +60,7 @@ print('example:\t{}'.format(example))
 print('penalty:\t{}'.format(penalty))
 print('element_type:\t{}'.format(element_type))
 print('solver_type:\t{}'.format(solver_type))
-print('gmres_tol:\t{}'.format(gmres_tol))
+print('tol:\t{}'.format(tol))
 print('intorder:\t{}'.format(intorder))
 print('refine_time:\t{}'.format(refine_time))
 print('epsilon_range:\t{}'.format(epsilon_range))
@@ -640,13 +640,13 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg_iter(tol=tol))
+    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg_iter(tol=tol, maxiter=1000))
     
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
 
 
-    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol))
+    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol, maxiter=1000))
 
     return uh0, basis
 
