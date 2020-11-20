@@ -27,7 +27,7 @@ tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
 refine_time = 8
-epsilon_range = 2
+epsilon_range = 6
 zero_ep = False
 element_type = 'P1'
 sigma = 5
@@ -36,7 +36,7 @@ example = 'ex1'
 alpha = 0.5
 gmres_tol = 1e-8
 
-save_path = 'log/test_solver_original_200_' + example + '_' + str(refine_time) + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+save_path = 'log/test_solver_original' + example + '_' + str(refine_time) + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 # output to txt 
 class Logger(object):
@@ -641,12 +641,13 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
-    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg_iter(tol=tol, maxiter=200))
+    wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg_iter(tol=tol, maxiter=1000))
     
     K2 = epsilon**2 * asm(a_load, basis['u']) + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
+    print('dofs:', K2.shape[0])
 
-    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol, maxiter=200))
+    uh0 = solve(*condense(K2, f2, D=easy_boundary(basis['u'])), solver=solver_iter_mgcg_iter(tol=tol, maxiter=1000))
     
     mgcg_time_end = time.time()
     print('MGCG Time Cost {:.3e} s'.format(mgcg_time_end-mgcg_time_start))
@@ -656,7 +657,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', tol=1e-8):
 df_list = []
 for j in range(epsilon_range):
     # epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
-    epsilon = 1 * 10**(-j) * (1 - zero_ep) * 0.001
+    epsilon = 1 * 10**(-j) * (1 - zero_ep)
     ep = epsilon
     L2_list = []
     Du_list = []
