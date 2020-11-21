@@ -23,10 +23,10 @@ solver_type = 'mgcg'
 refine_time = 8
 epsilon_range = 6
 zero_ep = False
-element_type = 'P1'
+element_type = 'P2'
 sigma = 5
 penalty = False
-example = 'ex1'
+example = 'ex3'
 
 # end of parameters
 

@@ -5,10 +5,10 @@
 - [x] examples to use
 - [x] github 的 reply
 - [ ] 边界惩罚推导
-- [ ] dof loc
-- [ ] smoother (GS point smoother)
-- [ ] Stokes 正负号的问题
+- [x] dof loc
+- [x] smoother (GS point smoother)
+- [x] Stokes 正负号的问题
 - [ ] einsum
 - [ ] @ method
 - [ ] pyamg.smoothed_aggregation_solver(A) 类型
-- [ ] amg tol
+- [x] amg tol

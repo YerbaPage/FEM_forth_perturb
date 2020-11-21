@@ -36,7 +36,7 @@ example = 'ex1'
 alpha = 0.5
 gmres_tol = 1e-8
 
-save_path = 'log/test_solver_original' + example + '_' + str(refine_time) + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+save_path = 'log/test_solver_original_amg1_' + example + '_' + str(refine_time) + '_' +'{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 # output to txt 
 class Logger(object):

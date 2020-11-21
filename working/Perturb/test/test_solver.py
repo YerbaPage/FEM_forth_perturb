@@ -26,7 +26,7 @@ exp = np.exp
 tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
-refine_time = 10
+refine_time = 8
 epsilon_range = 1
 zero_ep = False
 element_type = 'P1'
@@ -480,7 +480,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     A = asm(phipsi_load1, basis3['phi']) + epsilon**2 * asm(phipsi_load2, basis3['phi'])
     B = asm(phiq_load, basis3['phi'], basis3['p'])
-    C = asm(mass, basis3['p']) / alpha
+    C = asm(mass, basis3['p']) / (alpha * epsilon**2)
     F1 = asm(zpsi_load, basis2, basis3['phi']) * zh
 
     f3 = np.concatenate([F1, np.zeros(B.shape[0])])
@@ -533,7 +533,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 df_list = []
 for j in range(epsilon_range):
     # epsilon = 1 * 10**(-j*2) * (1 - zero_ep)
-    epsilon = 1 * 10**(-j) * (1 - zero_ep) 
+    epsilon = 1 * 10**(-j) * (1 - zero_ep) * 0.1
     ep = epsilon
     L2_list = []
     Du_list = []

@@ -1,0 +1,105 @@
+=======Arguments=======
+example:	ex1
+penalty:	False
+element_type:	P1
+solver_type:	mgcg
+gmres_tol:	1e-08
+intorder:	5
+refine_time:	10
+epsilon_range:	1
+sigma:	5
+save_path:	log/test_solver_ex1_P1_2020-11-21_15-41-14
+=======Results=======
+epsilon = 0.1
+mgcg total interation steps: 1
+mgcg total interation steps: 1
+gmres total interation steps: 26
+mgcg total interation steps: 1
+GMRES Time Cost 6.157e-02 s
+dofs: 24
+--------------------
+mgcg total interation steps: 1
+mgcg total interation steps: 3
+gmres total interation steps: 35
+mgcg total interation steps: 3
+GMRES Time Cost 5.458e-02 s
+dofs: 112
+--------------------
+mgcg total interation steps: 4
+mgcg total interation steps: 5
+gmres total interation steps: 39
+mgcg total interation steps: 5
+GMRES Time Cost 1.091e-01 s
+dofs: 480
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 7
+gmres total interation steps: 50
+mgcg total interation steps: 7
+GMRES Time Cost 1.640e-01 s
+dofs: 1984
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 9
+gmres total interation steps: 57
+mgcg total interation steps: 9
+GMRES Time Cost 2.361e-01 s
+dofs: 8064
+--------------------
+mgcg total interation steps: 7
+mgcg total interation steps: 11
+gmres total interation steps: 74
+mgcg total interation steps: 11
+GMRES Time Cost 1.057e+00 s
+dofs: 32512
+--------------------
+mgcg total interation steps: 7
+mgcg total interation steps: 14
+gmres total interation steps: 74
+mgcg total interation steps: 14
+GMRES Time Cost 4.695e+00 s
+dofs: 130560
+--------------------
+mgcg total interation steps: 9
+mgcg total interation steps: 17
+gmres total interation steps: 78
+mgcg total interation steps: 17
+GMRES Time Cost 2.317e+01 s
+dofs: 523264
+--------------------
+mgcg total interation steps: 9
+mgcg total interation steps: 20
+gmres total interation steps: 83
+mgcg total interation steps: 21
+GMRES Time Cost 1.037e+02 s
+dofs: 2095104
+--------------------
+mgcg total interation steps: 12
+mgcg total interation steps: 27
+gmres total interation steps: 83
+mgcg total interation steps: 27
+GMRES Time Cost 4.655e+02 s
+dofs: 8384512
+--------------------
+  h    L2u   H1u   H2u   epu
+2^-2  1.40  0.80  0.62  0.66
+2^-2  5.27626e-02  6.92351e-01  8.68757e+00  1.02387e+00
+2^-3  2.06  1.76  1.07  1.22
+2^-3  1.26497e-02  2.04392e-01  4.14901e+00  4.38595e-01
+2^-4  2.06  1.93  1.08  1.15
+2^-4  3.03374e-03  5.35383e-02  1.96479e+00  1.97685e-01
+2^-5  2.03  1.98  1.04  1.05
+2^-5  7.44035e-04  1.35493e-02  9.58808e-01  9.53892e-02
+2^-6  2.01  2.00  1.01  1.01
+2^-6  1.84902e-04  3.39793e-03  4.74647e-01  4.72343e-02
+2^-7  2.00  2.00  1.01  1.00
+2^-7  4.61522e-05  8.50150e-04  2.36299e-01  2.35587e-02
+2^-8  2.00  2.00  1.00  1.00
+2^-8  1.15334e-05  2.12579e-04  1.17915e-01  1.17720e-02
+2^-9  2.00  2.00  1.00  1.00
+2^-9  2.88305e-06  5.31475e-05  5.89017e-02  5.88507e-03
+2^-10  2.00  2.00  1.00  1.00
+2^-10  7.20744e-07  1.32870e-05  2.94372e-02  2.94242e-03
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Total Time Cost 2630.362 s
