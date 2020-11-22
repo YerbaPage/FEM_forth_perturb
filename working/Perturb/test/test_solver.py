@@ -480,7 +480,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     A = asm(phipsi_load1, basis3['phi']) + epsilon**2 * asm(phipsi_load2, basis3['phi'])
     B = asm(phiq_load, basis3['phi'], basis3['p'])
-    C = asm(mass, basis3['p']) / (alpha * epsilon**2)
+    C = asm(mass, basis3['p']) / (alpha * epsilon**(2))
     F1 = asm(zpsi_load, basis2, basis3['phi']) * zh
 
     f3 = np.concatenate([F1, np.zeros(B.shape[0])])
@@ -490,7 +490,7 @@ def solve_problem3(m, element_type='P1', solver_type='pcg', tol=1e-8):
 
     len_condensed = K.shape[0] - C.shape[0]
 
-    invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha * epsilon**2
+    invC = sparse.eye(C.shape[0]) * C.shape[0] * alpha * epsilon**(2)
 
     I = I_withp[:-C.shape[0]]
     B_reshaped = B.T[I].T
