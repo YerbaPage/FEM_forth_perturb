@@ -1,0 +1,43 @@
+=======Arguments=======
+example:	ex1
+penalty:	False
+element_type:	P1
+solver_type:	mgcg
+gmres_tol:	1e-08
+intorder:	5
+refine_time:	10
+epsilon_range:	1
+sigma:	5
+save_path:	log/test_solver_ex1_P1_2020-11-22_17-09-11
+=======Results=======
+epsilon = 0.1
+mgcg total interation steps: 1
+mgcg total interation steps: 1
+gmres total interation steps: 19
+mgcg total interation steps: 1
+GMRES Time Cost 1.496e-02 s
+dofs: 24
+--------------------
+mgcg total interation steps: 1
+mgcg total interation steps: 3
+gmres total interation steps: 300
+mgcg total interation steps: 3
+GMRES Time Cost 2.672e-01 s
+dofs: 112
+--------------------
+mgcg total interation steps: 4
+mgcg total interation steps: 5
+gmres total interation steps: 847
+mgcg total interation steps: 5
+GMRES Time Cost 9.050e-01 s
+dofs: 480
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 7
+gmres total interation steps: 920
+mgcg total interation steps: 7
+GMRES Time Cost 1.201e+00 s
+dofs: 1984
+--------------------
+mgcg total interation steps: 6
+mgcg total interation steps: 9
