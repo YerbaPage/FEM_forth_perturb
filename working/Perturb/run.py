@@ -18,14 +18,14 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 5
+intorder = 6
 solver_type = 'mgcg'
-refine_time = 8
-epsilon_range = 6
+refine_time = 7
+epsilon_range = 4
 zero_ep = False
-element_type = 'P2'
+element_type = 'P1'
 sigma = 5
-penalty = False
+penalty = True
 example = 'ex3'
 
 # end of parameters
@@ -103,6 +103,9 @@ def easy_boundary(basis):
                         dofs['top'].facet['u_n'], dofs['buttom'].facet['u_n']))
     return D
 
+@Functional
+def L2pnvError(w):
+    return (w.h * dot(w['n'].value, w['w'].grad))**2
 
 @BilinearForm
 def a_load(u, v, w):
@@ -266,7 +269,7 @@ def solve_problem2(m, element_type='P1', solver_type='pcg'):
     else:
         raise Exception("Solver not supported")
     
-    return uh0, basis
+    return uh0, basis, fbasis
 
 
 if example == 'ex1':
@@ -495,7 +498,7 @@ time_start = time.time()
 
 df_list = []
 for j in range(epsilon_range):
-    epsilon = 1 * 10**(-j) * (1 - zero_ep)
+    epsilon = 1 * 10**(-j * 2) * (1 - zero_ep)
     ep = epsilon
     L2_list = []
     Du_list = []
@@ -509,7 +512,7 @@ for j in range(epsilon_range):
         m.refine()
         
         if penalty:
-            uh0, basis = solve_problem2(m, element_type, solver_type)
+            uh0, basis, fbasis = solve_problem2(m, element_type, solver_type)
         else:
             uh0, basis = solve_problem1(m, element_type, solver_type)
 
@@ -520,8 +523,10 @@ for j in range(epsilon_range):
         L2u = np.sqrt(L2uError.assemble(basis['u'], w=U))
         Du = get_DuError(basis['u'], uh0)
         H1u = Du + L2u
-        D2u = get_D2uError(basis['u'], uh0)
-        H2u = Du + L2u + D2u
+        if penalty:
+            D2u = np.sqrt(get_D2uError(basis['u'], uh0)**2 + L2pnvError.assemble(fbasis, w=fbasis.interpolate(uh0)))
+        else:
+            D2u = get_D2uError(basis['u'], uh0)
         epu = np.sqrt(epsilon**2 * D2u**2 + Du**2)
         h_list.append(m.param())
         Du_list.append(Du)
