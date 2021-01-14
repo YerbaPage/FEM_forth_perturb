@@ -806,3 +806,18 @@ def ddexact(x, y):
     duyx = duxy
     duyy = -pi**2 * sin(pi * y) * sin(pi * x)
     return duxx, duxy, duyx, duyy
+
+def show_result(L2s, H1s, H2s, epus):
+
+    print('  h    L2u   H1u   H2u   epu')
+    for i in range(H2s.shape[0] - 1):
+        print(
+            '2^-' + str(i + 2), ' {:.2f}  {:.2f}  {:.2f}  {:.2f}'.format(
+                -np.log2(L2s[i + 1] / L2s[i]), -np.log2(H1s[i + 1] / H1s[i]),
+                -np.log2(H2s[i + 1] / H2s[i]),
+                -np.log2(epus[i + 1] / epus[i])))
+        print(
+            '2^-' + str(i + 2), ' {:.3e}  {:.3e}  {:.3e}  {:.3e}'.format(
+                L2s[i + 1], H1s[i + 1],
+                H2s[i + 1],
+                epus[i + 1]))
