@@ -18,15 +18,15 @@ exp = np.exp
 # parameters
 
 tol = 1e-8
-intorder = 6
+intorder = 5
 solver_type = 'mgcg'
 refine_time = 7
-epsilon_range = 4
+epsilon_range = 6
 zero_ep = False
 element_type = 'P1'
 sigma = 5
-penalty = True
-example = 'ex3'
+penalty = False
+example = 'ex1'
 
 # end of parameters
 
@@ -498,7 +498,7 @@ time_start = time.time()
 
 df_list = []
 for j in range(epsilon_range):
-    epsilon = 1 * 10**(-j * 2) * (1 - zero_ep)
+    epsilon = 1 * 10**(-j) * (1 - zero_ep)
     ep = epsilon
     L2_list = []
     Du_list = []
@@ -555,11 +555,11 @@ for j in range(epsilon_range):
                 -np.log2(L2s[i + 1] / L2s[i]), -np.log2(H1s[i + 1] / H1s[i]),
                 -np.log2(H2s[i + 1] / H2s[i]),
                 -np.log2(epus[i + 1] / epus[i])))
-#         print(
-#             '2^-' + str(i + 2), ' {:.5f}  {:.5f}  {:.5f}  {:.5f}'.format(
-#                 L2s[i + 1], H1s[i + 1],
-#                 H2s[i + 1],
-#                 epus[i + 1]))
+        print(
+            '2^-' + str(i + 2), ' {:.3e}  {:.3e}  {:.3e}  {:.3e}'.format(
+                L2s[i + 1], H1s[i + 1],
+                H2s[i + 1],
+                epus[i + 1]))
 
 time_end = time.time()
 
