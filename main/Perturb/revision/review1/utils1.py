@@ -55,12 +55,10 @@ def build_pc_diag(A: spmatrix) -> spmatrix:
 
 def solver_eigen_scipy(**kwargs) -> EigenSolver:
     """Solve generalized eigenproblem using SciPy (ARPACK).
-
     Returns
     -------
     EigenSolver
         A solver function that can be passed to :func:`solve`.
-
     """
     params = {
         'sigma': 10,
@@ -86,7 +84,6 @@ def solver_direct_scipy(**kwargs) -> LinearSolver:
 
 def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Optional[bool] = False, **kwargs) -> LinearSolver:
     """MGCG iterative linear solver.
-
     Parameters
     ----------
     krylov
@@ -94,7 +91,6 @@ def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Opti
         :func:`scipy.sparse.linalg.cg`
     verbose
         If True, print the norm of the iterate.
-
     Returns
     -------
     LinearSolver
@@ -128,7 +124,6 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
                        **kwargs) -> LinearSolver:
     """MGCG iterative linear solver.
-
     Parameters
     ----------
     krylov
@@ -136,12 +131,10 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
         :func:`scipy.sparse.linalg.cg`
     verbose
         If True, print the norm of the iterate.
-
     Returns
     -------
     LinearSolver
         A solver function that can be passed to :func:`solve`.
-
     """
     def callback(x):
         if verbose:
@@ -155,7 +148,6 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
         kwargs['M'] = ml.aspreconditioner() # params to be developed
         
         sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
-#         sol, info = krylov(A, b, **{'callback': callback, **kwargs})
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
@@ -169,22 +161,18 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
 def solver_iter_pyamg(verbose: Optional[bool] = False,
                        **kwargs) -> LinearSolver:
     """Pyamg iterative linear solver.
-
     Parameters
     ----------
     verbose
         If True, print the norm of the iterate.
-
     Any remaining keyword arguments are passed on to the solver, in particular
     tol and atol, the tolerances, maxiter, and M, the preconditioner.  If the
     last is omitted, a diagonal preconditioner is supplied using
     :func:`skfem.utils.build_pc_diag`.
-
     Returns
     -------
     LinearSolver
         A solver function that can be passed to :func:`solve`.
-
     """
     
     def my_pyamg(A, b, **kwargs):
@@ -214,7 +202,6 @@ def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
                        **kwargs) -> LinearSolver:
     """Krylov-subspace iterative linear solver.
-
     Parameters
     ----------
     krylov
@@ -222,12 +209,10 @@ def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
         :func:`scipy.sparse.linalg.cg`
     verbose
         If True, print the norm of the iterate.
-
     Any remaining keyword arguments are passed on to the solver, in particular
     tol and atol, the tolerances, maxiter, and M, the preconditioner.  If the
     last is omitted, a diagonal preconditioner is supplied using
     :func:`skfem.utils.build_pc_diag`.
-
     Returns
     -------
     LinearSolver
@@ -267,7 +252,6 @@ def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
                        **kwargs) -> LinearSolver:
     """Krylov-subspace iterative linear solver.
-
     Parameters
     ----------
     krylov
@@ -275,17 +259,14 @@ def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
         :func:`scipy.sparse.linalg.cg`
     verbose
         If True, print the norm of the iterate.
-
     Any remaining keyword arguments are passed on to the solver, in particular
     tol and atol, the tolerances, maxiter, and M, the preconditioner.  If the
     last is omitted, a diagonal preconditioner is supplied using
     :func:`skfem.utils.build_pc_diag`.
-
     Returns
     -------
     LinearSolver
         A solver function that can be passed to :func:`solve`.
-
     """
     def callback(x):
         if verbose:
@@ -331,9 +312,7 @@ def solve(A: spmatrix,
           solver: Optional[Union[LinearSolver, EigenSolver]] = None,
           **kwargs) -> ndarray:
     """Solve a linear system or a generalized eigenvalue problem.
-
     The remaining keyword arguments are passed to the solver.
-
     Parameters
     ----------
     A
@@ -347,7 +326,6 @@ def solve(A: spmatrix,
         :func:`skfem.utils.solver_eigen_scipy` (default),
         :func:`skfem.utils.solver_iter_pcg`,
         :func:`skfem.utils.solver_iter_krylov`.
-
     """
     if solver is None:
         if isinstance(b, spmatrix):
@@ -389,17 +367,13 @@ def condense(A: spmatrix,
              D: DofsCollection = None,
              expand: bool = True) -> CondensedSystem:
     """Eliminate degrees-of-freedom from a linear system.
-
     The user should provide the linear system ``A`` and ``b``
     and either the set of DOFs to eliminate (``D``) or the set
     of DOFs to keep (``I``).  Optionally, nonzero values for
     the eliminated DOFs can be supplied via ``x``.
-
     .. note::
-
         Supports also generalized eigenvalue problems
         where ``b`` is a matrix.
-
     Parameters
     ----------
     A
@@ -418,13 +392,11 @@ def condense(A: spmatrix,
         If `True` (default), returns also `x` and `I`. As a consequence,
         :func:`skfem.utils.solve` will expand the solution vector
         automatically.
-
     Returns
     -------
     CondensedSystem
         The condensed linear system and (optionally) information about
         the boundary values.
-
     """
     D = _flatten_dofs(D)
     I = _flatten_dofs(I)
@@ -486,7 +458,6 @@ def project(fun,
             I: ndarray = None,
             expand: bool = False) -> ndarray:
     """Projection from one basis to another.
-
     Parameters
     ----------
     fun
@@ -501,12 +472,10 @@ def project(fun,
         Index set for limiting the projection to a subset.
     expand
         Passed to :func:`skfem.utils.condense`.
-
     Returns
     -------
     ndarray
         The projected solution vector.
-
     """
 
     @BilinearForm
@@ -574,7 +543,6 @@ pi = np.pi
 sin = np.sin
 cos = np.cos
 exp = np.exp
-atan = np.arctan
 
 # parameters
 
@@ -583,31 +551,6 @@ atan = np.arctan
 # print parameters
 
 # functions
-
-@LinearForm
-def f_load(v, w):
-    '''
-    for $(f, x_{h})$
-    '''
-    return 0
-
-def exact_u(x, y):
-    return (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
-
-
-def dexact_u(x, y):
-    dux = (5*x*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**2*(y**2/x**2 + 1))
-    duy = (5*y*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) + (5*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x*(y**2/x**2 + 1))
-    return dux, duy
-
-
-def ddexact(x, y):
-    duxx = (5*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) - (5*x**2*sin((5*atan(y/x))/3))/(9*(x**2 + y**2)**(7/6)) - (10*y**3*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**5*(y**2/x**2 + 1)**2) - (25*y**2*sin((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(9*x**4*(y**2/x**2 + 1)**2) - (50*y*cos((5*atan(y/x))/3))/(9*x*(x**2 + y**2)**(1/6)*(y**2/x**2 + 1)) + (10*y*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**3*(y**2/x**2 + 1))
-    duxy = (25*cos((5*atan(y/x))/3))/(9*(x**2 + y**2)**(1/6)*(y**2/x**2 + 1)) - (5*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**2*(y**2/x**2 + 1)) - (5*x*y*sin((5*atan(y/x))/3))/(9*(x**2 + y**2)**(7/6)) - (25*y**2*cos((5*atan(y/x))/3))/(9*x**2*(x**2 + y**2)**(1/6)*(y**2/x**2 + 1)) + (10*y**2*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**4*(y**2/x**2 + 1)**2) + (25*y*sin((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(9*x**3*(y**2/x**2 + 1)**2)
-    duyx = duxy
-    duyy = (5*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) - (5*y**2*sin((5*atan(y/x))/3))/(9*(x**2 + y**2)**(7/6)) - (25*sin((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(9*x**2*(y**2/x**2 + 1)**2) + (50*y*cos((5*atan(y/x))/3))/(9*x*(x**2 + y**2)**(1/6)*(y**2/x**2 + 1)) - (10*y*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**3*(y**2/x**2 + 1)**2)
-    return duxx, duxy, duyx, duyy
-
 
 def easy_boundary_penalty(m, basis):
     '''
@@ -814,25 +757,25 @@ def get_D2uError(basis, u):
 
 
 
-# def exact_u(x, y):
-#     return (sin(pi * x) * sin(pi * y))**2
+def exact_u(x, y):
+    return (sin(pi * x) * sin(pi * y))**2
 
 
-# def dexact_u(x, y):
-#     dux = 2 * pi * cos(pi * x) * sin(pi * x) * sin(pi * y)**2
-#     duy = 2 * pi * cos(pi * y) * sin(pi * x)**2 * sin(pi * y)
-#     return dux, duy
+def dexact_u(x, y):
+    dux = 2 * pi * cos(pi * x) * sin(pi * x) * sin(pi * y)**2
+    duy = 2 * pi * cos(pi * y) * sin(pi * x)**2 * sin(pi * y)
+    return dux, duy
 
 
-# def ddexact(x, y):
-#     duxx = 2 * pi**2 * cos(pi * x)**2 * sin(pi * y)**2 - 2 * pi**2 * sin(
-#         pi * x)**2 * sin(pi * y)**2
-#     duxy = 2 * pi * cos(pi * x) * sin(pi * x) * 2 * pi * cos(pi * y) * sin(
-#         pi * y)
-#     duyx = duxy
-#     duyy = 2 * pi**2 * cos(pi * y)**2 * sin(pi * x)**2 - 2 * pi**2 * sin(
-#         pi * y)**2 * sin(pi * x)**2
-#     return duxx, duxy, duyx, duyy
+def ddexact(x, y):
+    duxx = 2 * pi**2 * cos(pi * x)**2 * sin(pi * y)**2 - 2 * pi**2 * sin(
+        pi * x)**2 * sin(pi * y)**2
+    duxy = 2 * pi * cos(pi * x) * sin(pi * x) * 2 * pi * cos(pi * y) * sin(
+        pi * y)
+    duyx = duxy
+    duyy = 2 * pi**2 * cos(pi * y)**2 * sin(pi * x)**2 - 2 * pi**2 * sin(
+        pi * y)**2 * sin(pi * x)**2
+    return duxx, duxy, duyx, duyy
 
 def show_result(L2s, H1s, H2s, epus):
 
