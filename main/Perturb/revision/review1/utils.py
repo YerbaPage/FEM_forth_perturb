@@ -549,7 +549,7 @@ def pproject(fun,
         if solver is None:
             return solve(*condense(M, f, I=I, expand=expand))
         else:
-            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-8))
+            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-11))
     return solve(M, f)
 
     
@@ -618,11 +618,11 @@ def project(fun,
             f = asm(mass, basis_from, basis_to) @ fun
 
     if I is not None:
-        print('aaa')
+        # print('aaa')
         if solver is None:
             return solve(*condense(M, f, I=I, expand=expand))
         else:
-            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-8))
+            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-11))
     return solve(M, f)
 
 
