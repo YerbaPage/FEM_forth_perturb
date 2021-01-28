@@ -480,12 +480,13 @@ def adaptive_theta(est, theta=0.5, max=None):
         return np.nonzero(theta * max < est)[0]
 
 
-def project(fun,
+def pproject(fun,
             basis_from: Basis = None,
             basis_to: Basis = None,
             diff: int = None,
             I: ndarray = None,
-            expand: bool = False) -> ndarray:
+            expand: bool = False,
+            solver: Optional[Union[LinearSolver, EigenSolver]] = None) -> ndarray:
     """Projection from one basis to another.
 
     Parameters
@@ -509,6 +510,7 @@ def project(fun,
         The projected solution vector.
 
     """
+
 
     @BilinearForm
     def mass(u, v, w):
@@ -543,8 +545,84 @@ def project(fun,
             f = asm(mass, basis_from, basis_to) @ fun
 
     if I is not None:
-        return solve(*condense(M, f, I=I, expand=expand))
+        # print('aaa')
+        if solver is None:
+            return solve(*condense(M, f, I=I, expand=expand))
+        else:
+            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-8))
+    return solve(M, f)
 
+    
+def project(fun,
+            basis_from: Basis = None,
+            basis_to: Basis = None,
+            diff: int = None,
+            I: ndarray = None,
+            expand: bool = False,
+            solver: Optional[Union[LinearSolver, EigenSolver]] = None) -> ndarray:
+    """Projection from one basis to another.
+
+    Parameters
+    ----------
+    fun
+        A solution vector or a function handle.
+    basis_from
+        The finite element basis to project from.
+    basis_to
+        The finite element basis to project to.
+    diff
+        Differentiate with respect to the given dimension.
+    I
+        Index set for limiting the projection to a subset.
+    expand
+        Passed to :func:`skfem.utils.condense`.
+
+    Returns
+    -------
+    ndarray
+        The projected solution vector.
+
+    """
+
+
+    @BilinearForm
+    def mass(u, v, w):
+        p = u * v
+        return sum(p) if isinstance(basis_to.elem, ElementVectorH1) else p
+
+    @LinearForm
+    def funv(v, w):
+        if len(signature(fun).parameters) == 1:
+            p = fun(w.x) * v
+        else:
+            warnings.warn("The function provided to 'project' should "
+                          "take only one argument in the future.",
+                          DeprecationWarning)
+            p = fun(*w.x) * v
+        return sum(p) if isinstance(basis_to.elem, ElementVectorH1) else p
+
+    @BilinearForm
+    def deriv(u, v, w):
+        from skfem.helpers import grad
+        du = grad(u)
+        return du[diff] * v
+
+    M = asm(mass, basis_to)
+
+    if not isinstance(fun, ndarray):
+        f = asm(funv, basis_to)
+    else:
+        if diff is not None:
+            f = asm(deriv, basis_from, basis_to) @ fun
+        else:
+            f = asm(mass, basis_from, basis_to) @ fun
+
+    if I is not None:
+        print('aaa')
+        if solver is None:
+            return solve(*condense(M, f, I=I, expand=expand))
+        else:
+            return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-8))
     return solve(M, f)
 
 
