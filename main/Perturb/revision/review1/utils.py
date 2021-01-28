@@ -670,9 +670,22 @@ def f_load(v, w):
     '''
     return 0
 
-def exact_u(x, y):
-    return (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
+# def exact_u(x, y):
+#     
 
+def exact_u(x, y):
+    out = np.zeros_like(x)
+    if x.ndim == 1:
+        for i in range(x.shape[0]):
+            if x[i] != 0:
+                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(5 * atan(y[i] / x[i]) / 3)
+            elif y[i] > 0:
+                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(90 * 5 / 3)
+            else:
+                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(270 * 5 / 3)
+    else:
+        out = (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
+    return out
 
 def dexact_u(x, y):
     dux = (5*x*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**2*(y**2/x**2 + 1))
