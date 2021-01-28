@@ -19,7 +19,6 @@ from skfem.assembly.basis import Basis
 from skfem.element import ElementVectorH1
 
 
-
 # custom types for describing input and output values
 
 LinearSolver = Callable[[spmatrix, ndarray], ndarray]
@@ -154,8 +153,10 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
         ml = pyamg.ruge_stuben_solver(A)
         kwargs['M'] = ml.aspreconditioner() # params to be developed
         
-        sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
-#         sol, info = krylov(A, b, **{'callback': callback, **kwargs})
+        try:
+            sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
+        except:
+            sol, info = krylov(A, b, **{'callback': callback, **kwargs})
         if info > 0:
             warnings.warn("Convergence not achieved!")
         elif info == 0 and verbose:
