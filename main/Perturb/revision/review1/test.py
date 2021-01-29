@@ -112,4 +112,79 @@ uh0, basis = solve_problem1(m, element_type, solver_type, intorder, tol, epsilon
 x = basis['u'].doflocs[0]
 y = basis['u'].doflocs[1]
 u = exact_u(x, y)
-plot(basis['u'], u-uh0, colorbar=True)
+# plot(basis['u'], u-uh0, colorbar=True)
+
+time_start = time.time()
+
+print('=======Arguments=======')
+print('penalty:\t{}'.format(penalty))
+print('element_type:\t{}'.format(element_type))
+print('solver_type:\t{}'.format(solver_type))
+print('tol:\t{}'.format(tol))
+print('intorder:\t{}'.format(intorder))
+print('refine_time:\t{}'.format(refine_time))
+print('sigma:\t{}'.format(sigma))
+print('=======Results=======')
+
+df_list = []
+for j in range(epsilon_range):
+    epsilon = 1 * 10**(-j)
+    ep = epsilon
+    L2_list = []
+    Du_list = []
+    D2u_list = []
+    h_list = []
+    epu_list = []
+#     m = MeshTri().init_lshaped()
+    m = MeshTri()
+#     draw(m)
+
+    for i in range(1, refine_time+1):
+        
+        m.refine()
+        
+        if penalty:
+            uh0, basis, fbasis = solve_problem2(m, element_type, solver_type, intorder, tol, epsilon)
+        else:
+            uh0, basis = solve_problem1(m, element_type, solver_type, intorder, tol, epsilon)
+
+        U = basis['u'].interpolate(uh0).value
+
+        # compute errors
+
+        L2u = np.sqrt(L2uError.assemble(basis['u'], w=U))
+        Du = get_DuError(basis['u'], uh0)
+        H1u = Du + L2u
+        if penalty:
+            D2u = np.sqrt(get_D2uError(basis['u'], uh0)**2 + L2pnvError.assemble(fbasis, w=fbasis.interpolate(uh0)))
+        else:
+            D2u = get_D2uError(basis['u'], uh0)
+        epu = np.sqrt(epsilon**2 * D2u**2 + Du**2)
+        h_list.append(m.param())
+        Du_list.append(Du)
+        L2_list.append(L2u)
+        D2u_list.append(D2u)
+        epu_list.append(epu)
+        
+    hs = np.array(h_list)
+    L2s = np.array(L2_list)
+    Dus = np.array(Du_list)
+    D2us = np.array(D2u_list)
+    epus = np.array(epu_list)
+    H1s = L2s + Dus
+    H2s = H1s + D2us
+    
+    # store data
+    data = np.array([L2s, H1s, H2s, epus])
+    df = pd.DataFrame(data.T, columns=['L2', 'H1', 'H2', 'Energy'])
+    df_list.append(df)
+    
+    print('epsilion:', epsilon)
+    show_result(L2s, H1s, H2s, epus)
+
+time_end = time.time()
+
+result = df_list[0].append(df_list[1:])
+# result.to_csv(save_path+'.csv')
+print('======= Errors saved in:', save_path+'.csv ==========')
+print('Total Time Cost {:.2f} s'.format(time_end-time_start))
