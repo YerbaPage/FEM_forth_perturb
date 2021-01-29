@@ -687,9 +687,22 @@ def exact_u(x, y):
         out = (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
     return out
 
+def get_theta(x, y):
+    import math
+    import cmath
+    theta = np.zeros_like(x)
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            # print(x)
+            r, rad = cmath.polar(complex(x[i, j], y[i, j]))
+            theta[i, j] = math.degrees(rad)
+    return theta
+
+
 def dexact_u(x, y):
-    dux = (5*x*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x**2*(y**2/x**2 + 1))
-    duy = (5*y*sin((5*atan(y/x))/3))/(3*(x**2 + y**2)**(1/6)) + (5*cos((5*atan(y/x))/3)*(x**2 + y**2)**(5/6))/(3*x*(y**2/x**2 + 1))
+    theta = get_theta(x, y)
+    dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     return dux, duy
 
 
