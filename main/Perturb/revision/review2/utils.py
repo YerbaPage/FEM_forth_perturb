@@ -662,7 +662,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
 
     return uh0, basis
 
-def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6):
+def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6, basis_only=False):
     '''
     adding mgcg solver for problem 2
     '''
@@ -691,6 +691,9 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         raise Exception("Solver not supported")
 
     fbasis = FacetBasis(m, element['u'])
+    
+    if basis_only:
+        return basis, fbasis
 
     p1 = asm(penalty_1, fbasis)
     p2 = asm(penalty_2, fbasis)
