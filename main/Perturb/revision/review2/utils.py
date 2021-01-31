@@ -691,7 +691,7 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         raise Exception("Solver not supported")
 
     fbasis = FacetBasis(m, element['u'])
-    
+
     if basis_only:
         return basis, fbasis
 
