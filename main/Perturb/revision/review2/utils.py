@@ -538,6 +538,8 @@ def project(fun,
         if diff is not None:
             f = asm(deriv, basis_from, basis_to) @ fun
         else:
+            print(asm(mass, basis_from, basis_to).shape)
+            print(fun.shape)
             f = asm(mass, basis_from, basis_to) @ fun
 
     if I is not None:

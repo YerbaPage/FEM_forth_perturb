@@ -480,7 +480,7 @@ def adaptive_theta(est, theta=0.5, max=None):
         return np.nonzero(theta * max < est)[0]
 
 
-def pproject(fun,
+def project(fun,
             basis_from: Basis = None,
             basis_to: Basis = None,
             diff: int = None,
@@ -542,6 +542,8 @@ def pproject(fun,
         if diff is not None:
             f = asm(deriv, basis_from, basis_to) @ fun
         else:
+            # print(asm(mass, basis_from, basis_to).shape)
+            # print(fun.shape)
             f = asm(mass, basis_from, basis_to) @ fun
 
     if I is not None:
@@ -553,7 +555,7 @@ def pproject(fun,
     return solve(M, f)
 
     
-def project(fun,
+def pproject(fun,
             basis_from: Basis = None,
             basis_to: Basis = None,
             diff: int = None,
