@@ -62,7 +62,7 @@ base_test_basis = np.zeros_like(base_basis['u'].interpolate(base_uh0).value)
 import concurrent.futures
 
 def interpolator_parallel(j):
-    for i in tqdm(range(base_test_basis.shape[0])):
+    for i in tqdm(range(base_test_basis.shape[1])):
         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
     print(j, 'done')
 
@@ -72,8 +72,8 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(interpolator_parallel, range(base_test_basis.shape[1]))
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        executor.map(interpolator_parallel, range(base_test_basis.shape[0]))
 
     end = time.time()
 
