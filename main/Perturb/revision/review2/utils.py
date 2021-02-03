@@ -624,6 +624,8 @@ def easy_boundary(m, basis):
 
 def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6):
     '''
+
+    
     switching to mgcg solver for problem 1
     '''
     if element_type == 'P1':
