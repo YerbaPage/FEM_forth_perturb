@@ -2,7 +2,7 @@
 import numpy as np
 from utils import *
 from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
-from scipy.sparse.linalg import LinearOperator, minres
+from scipy.sparse.linalg import LinearOperator, minres, cg
 from skfem.assembly import BilinearForm, LinearForm
 import datetime
 import pandas as pd

@@ -640,7 +640,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
 
     if basis_only:
         return basis
-        
+
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
@@ -688,6 +688,10 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     if basis_only:
         return basis, fbasis
 
+
+    K1 = asm(laplace, basis['w'])
+    f1 = asm(f_load, basis['w'])
+    
     if solver_type == 'amg':
         wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
@@ -696,10 +700,6 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
-
-    K1 = asm(laplace, basis['w'])
-    f1 = asm(f_load, basis['w'])
-
 
     p1 = asm(penalty_1, fbasis)
     p2 = asm(penalty_2, fbasis)
