@@ -828,3 +828,13 @@ def show_result(L2s, H1s, H2s, epus):
                 L2s[i + 1], H1s[i + 1],
                 H2s[i + 1],
                 epus[i + 1]))
+
+
+def load_solution(test_order, element_type, intorder=3):
+
+    test_path = 'solutions/uh0_{}.npy'.format(test_order)
+    m = MeshTri()
+    m.refine(test_order)
+    test_basis, test_fbasis = solve_problem2(m, element_type=element_type, intorder=intorder, basis_only=True)
+    test_uh0 = np.load(test_path)
+    return test_basis, test_fbasis, test_uh0, m
