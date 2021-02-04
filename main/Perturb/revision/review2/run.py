@@ -38,7 +38,7 @@ class Logger(object):
 
 sys.stdout = Logger(save_path+'.txt', sys.stdout)
 
-base_basis, base_fbasis, base_uh0, fine_m = load_solution(base_order=base_order, element_type=element_type, penalty=penalty, intorder=intorder)
+base_basis, base_fbasis, base_uh0, fine_m = load_solution(test_order=base_order, element_type=element_type, penalty=penalty, intorder=intorder)
 
 coordinates = base_basis['u'].global_coordinates().value
 # print(coordinates)
@@ -74,7 +74,7 @@ for i in range(1, refine_time+1):
     m.refine(i)
     test_order = i
     print('Testing order: ', test_order)
-    test_basis, test_fbasis, test_uh0, coarse_m = load_solution(test_order, element_type, intorder)
+    test_basis, test_fbasis, test_uh0, coarse_m = load_solution(test_order=test_order, element_type=element_type, penalty=penalty, intorder=intorder)
 
     if penalty:
         uh0, basis, fbasis = solve_problem2(m, element_type, solver_type, intorder=intorder, tol=1e-8, epsilon=1e-6)
