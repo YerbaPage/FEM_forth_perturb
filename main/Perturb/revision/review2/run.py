@@ -16,7 +16,7 @@ tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
 refine_time = 2
-base_order = 4
+base_order = 8
 element_type = 'P1'
 sigma = 5
 penalty = False
@@ -93,16 +93,16 @@ if __name__ == '__main__':
 
         base_test_basis = np.zeros_like(base_basis['u'].interpolate(base_uh0).value)
 
-        with ProcessPoolExecutor() as executor:
-            func = interpolator_parallel
-            result_list = list(executor.map(func, tqdm(range(base_test_basis.shape[1]))))
+        # with ProcessPoolExecutor() as executor:
+        #     func = interpolator_parallel
+        #     result_list = list(executor.map(func, tqdm(range(base_test_basis.shape[1]))))
 
-        for k in tqdm(result_list):
-            base_test_basis += k
+        # for k in tqdm(result_list):
+        #     base_test_basis += k
 
-        # for i in tqdm(range(base_test_basis.shape[0])):
-        #     for j in range(base_test_basis.shape[1]):
-        #         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
+        for i in tqdm(range(base_test_basis.shape[0])):
+            for j in range(base_test_basis.shape[1]):
+                base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
 
         L2u = np.sqrt(np.sum(base_basis['u'].dx * (base_basis['u'].interpolate(base_uh0).value - base_test_basis)**2))
 
