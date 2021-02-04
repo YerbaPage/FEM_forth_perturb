@@ -10,6 +10,7 @@ import sys
 import time
 from tqdm import tqdm
 
+from concurrent.futures import ProcessPoolExecutor
 
 tol = 1e-8
 intorder = 3 # 6
@@ -82,14 +83,6 @@ for i in range(1, refine_time+1):
         uh0, basis = solve_problem1(m, element_type, solver_type, intorder=intorder, tol=1e-8, epsilon=1e-6)
 
     base_test_basis = np.zeros_like(base_basis['u'].interpolate(base_uh0).value)
-
-    # from numba import jit
-    # # @jit
-    # def test():
-    #     for i in tqdm(range(base_test_basis.shape[0])):
-    #         for j in range(base_test_basis.shape[1]):
-    #             base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
-    #     return base_test_basis
 
     for i in tqdm(range(base_test_basis.shape[0])):
         for j in range(base_test_basis.shape[1]):
