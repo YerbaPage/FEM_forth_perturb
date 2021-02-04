@@ -15,8 +15,8 @@ from concurrent.futures import ProcessPoolExecutor
 tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
-refine_time = 2
-base_order = 8
+refine_time = 7
+base_order = 7
 element_type = 'P1'
 sigma = 5
 penalty = False
