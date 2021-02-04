@@ -1,0 +1,12 @@
+=======Arguments=======
+penalty:	True
+element_type:	P1
+base_order:	5
+solver_type:	mgcg
+tol:	1e-08
+intorder:	3
+refine_time:	3
+epsilon:	1e-06
+sigma:	5
+=======Results=======
+Testing order:  1

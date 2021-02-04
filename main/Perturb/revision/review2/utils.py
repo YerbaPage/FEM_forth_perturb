@@ -757,7 +757,7 @@ def penalty_2(u, v, w):
 
 
 @BilinearForm
-def penalty_3(u, v, w):
+def penalty_3(u, v, w, sigma = 5):
     return (sigma / w.h) * dot(grad(u), w.n) * dot(grad(v), w.n)
 
 
@@ -830,9 +830,9 @@ def show_result(L2s, H1s, H2s, epus):
                 epus[i + 1]))
 
 
-def load_solution(test_order, element_type, intorder=3):
+def load_solution(test_order, element_type, penalty, intorder=3):
 
-    test_path = 'solutions/uh0_{}.npy'.format(test_order)
+    test_path = 'solutions/{}_{}/uh0_{}.npy'.format(element_type, ('pen' if penalty else 'nopen'), test_order)
     m = MeshTri()
     m.refine(test_order)
     test_basis, test_fbasis = solve_problem2(m, element_type=element_type, intorder=intorder, basis_only=True)

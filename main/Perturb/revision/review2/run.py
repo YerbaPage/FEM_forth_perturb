@@ -14,9 +14,10 @@ from tqdm import tqdm
 tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
-refine_time = 3
+refine_time = 5
+base_order = 6
 element_type = 'P1'
-sigma = 5 
+sigma = 5
 penalty = False
 epsilon = 1e-6
 ep = epsilon
@@ -37,9 +38,7 @@ class Logger(object):
 
 sys.stdout = Logger(save_path+'.txt', sys.stdout)
 
-base_order = 4
-
-base_basis, base_fbasis, base_uh0, fine_m = load_solution(base_order, element_type, intorder)
+base_basis, base_fbasis, base_uh0, fine_m = load_solution(base_order=base_order, element_type=element_type, penalty=penalty, intorder=intorder)
 
 coordinates = base_basis['u'].global_coordinates().value
 # print(coordinates)
@@ -74,6 +73,7 @@ for i in range(1, refine_time+1):
     m = MeshTri()
     m.refine(i)
     test_order = i
+    print('Testing order: ', test_order)
     test_basis, test_fbasis, test_uh0, coarse_m = load_solution(test_order, element_type, intorder)
 
     if penalty:
