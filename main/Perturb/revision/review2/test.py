@@ -59,32 +59,38 @@ coordinates = base_basis['u'].global_coordinates().value
 
 base_test_basis = np.zeros_like(base_basis['u'].interpolate(base_uh0).value)
 
-import concurrent.futures
+from concurrent.futures import ProcessPoolExecutor
 
 def interpolator_parallel(j):
-    for i in tqdm(range(base_test_basis.shape[1])):
+    global base_test_basis
+    for i in tqdm(range(base_test_basis.shape[0])):
         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
     print(j, 'done')
+    return base_test_basis
 
 import time
 
 if __name__ == '__main__':
 
+    # print('Before: ', base_test_basis)
     start = time.time()
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
-        executor.map(interpolator_parallel, range(base_test_basis.shape[0]))
+    with ProcessPoolExecutor(max_workers=4) as executor:
+        result_list = list(executor.map(interpolator_parallel, range(base_test_basis.shape[1])))
 
     end = time.time()
-
     print('time: ', end - start)
 
-    start = time.time()
+    for k in tqdm(result_list):
+        base_test_basis += k
+    print('After: ', base_test_basis)
+    
+    # start = time.time()
 
-    for i in tqdm(range(base_test_basis.shape[0])):
-        for j in range(base_test_basis.shape[1]):
-            base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
+    # for i in tqdm(range(base_test_basis.shape[0])):
+    #     for j in range(base_test_basis.shape[1]):
+    #         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
 
-    end = time.time()
+    # end = time.time()
 
-    print('time: ', end - start)
+    # print('time: ', end - start)
