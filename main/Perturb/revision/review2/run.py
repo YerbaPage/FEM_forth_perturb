@@ -14,8 +14,8 @@ from tqdm import tqdm
 tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
-refine_time = 5
-base_order = 6
+refine_time = 2
+base_order = 4
 element_type = 'P1'
 sigma = 5
 penalty = False
@@ -97,7 +97,7 @@ for i in range(1, refine_time+1):
 
     L2u = np.sqrt(np.sum(base_basis['u'].dx * (base_basis['u'].interpolate(base_uh0).value - base_test_basis)**2))
 
-    dbasis = InteriorBasis(coarse_m, ElementTriDG(ElementTriP1()), intorder=3)
+    dbasis = InteriorBasis(coarse_m, ElementTriDG(ElementTriP1()), intorder=intorder)
     dx = project(test_uh0, basis_from=test_basis['u'], basis_to=dbasis, diff=0)
     dy = project(test_uh0, basis_from=test_basis['u'], basis_to=dbasis, diff=1)
 
@@ -124,7 +124,7 @@ for i in range(1, refine_time+1):
     Du = get_DuError_N(base_basis['u'], base_uh0)
     H1u = Du + L2u
     
-    ddbasis = InteriorBasis(coarse_m, ElementTriDG(ElementTriP0()), intorder=3)
+    ddbasis = InteriorBasis(coarse_m, ElementTriDG(ElementTriP0()), intorder=intorder)
     dxx = project(dx, basis_from=dbasis, basis_to=ddbasis, diff=0)
     dxy = project(dx, basis_from=dbasis, basis_to=ddbasis, diff=1)
     dyx = dxy
