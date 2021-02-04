@@ -622,10 +622,8 @@ def easy_boundary(m, basis):
                         dofs['top'].facet['u_n'], dofs['buttom'].facet['u_n']))
     return D
 
-def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6):
+def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6, basis_only=False):
     '''
-
-    
     switching to mgcg solver for problem 1
     '''
     if element_type == 'P1':
@@ -640,6 +638,9 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         for variable, e in element.items()
     }  # intorder: integration order for quadrature
 
+    if basis_only:
+        return basis
+        
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
 
@@ -682,8 +683,10 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         for variable, e in element.items()
     }
 
-    K1 = asm(laplace, basis['w'])
-    f1 = asm(f_load, basis['w'])
+    fbasis = FacetBasis(m, element['u'])
+
+    if basis_only:
+        return basis, fbasis
 
     if solver_type == 'amg':
         wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
@@ -694,10 +697,9 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     else:
         raise Exception("Solver not supported")
 
-    fbasis = FacetBasis(m, element['u'])
+    K1 = asm(laplace, basis['w'])
+    f1 = asm(f_load, basis['w'])
 
-    if basis_only:
-        return basis, fbasis
 
     p1 = asm(penalty_1, fbasis)
     p2 = asm(penalty_2, fbasis)
