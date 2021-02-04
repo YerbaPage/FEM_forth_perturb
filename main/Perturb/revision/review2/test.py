@@ -69,13 +69,38 @@ base_test_basis = np.zeros_like(base_basis['u'].interpolate(base_uh0).value)
 #         base_test_basis += k
     
 #     return base_test_basis
-def interpolator_parallel(j):
-    global base_test_basis
+
+# def interpolator_parallel(j):
+#     global base_test_basis
+#     for i in tqdm(range(base_test_basis.shape[0])):
+#         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
+#     # print(j, 'done')
+#     return base_test_basis
+
+def interpolator_parallel(base_test_basis, test_basis, test_uh0, coordinates, j):
+
     for i in tqdm(range(base_test_basis.shape[0])):
         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
     # print(j, 'done')
     return base_test_basis
-    
+
+
+# class wrapped_interpolator():
+#     def __init__(self, base_test_basis, test_basis, test_uh0, coordinates):
+#         self.base_test_basis = base_test_basis
+#         self.test_basis = test_basis
+#         self.test_uh0 = test_uh0
+#         self.coordinates = coordinates
+
+#     def interpolator_parallel(self, j):
+
+#         for i in tqdm(range(self.base_test_basis.shape[0])):
+#             self.base_test_basis[i][j] = self.test_basis['u'].interpolator(self.test_uh0)(np.array([[self.coordinates[0][i][j]], [self.coordinates[1][i][j]]]))
+#         # print(j, 'done')
+#         return self.base_test_basis
+
+from functools import partial
+
 if __name__ == '__main__':
 
     print('Before: ', base_test_basis)
@@ -84,7 +109,12 @@ if __name__ == '__main__':
     N = base_test_basis.shape[1]
 
     with ProcessPoolExecutor() as executor:
-        result_list = list(executor.map(interpolator_parallel, tqdm(range(N))))
+
+        # func = wrapped_interpolator(base_test_basis, test_basis, test_uh0, coordinates).interpolator_parallel
+        func = partial(interpolator_parallel, base_test_basis, test_basis, test_uh0, coordinates)
+        result_list = list(executor.map(func, tqdm(range(N))))
+    # func = wrapped_interpolator(base_test_basis, test_basis, test_uh0, coordinates).interpolator_parallel
+    # result_list = list(map(func, tqdm(range(N))))
 
     for k in tqdm(result_list):
         base_test_basis += k
