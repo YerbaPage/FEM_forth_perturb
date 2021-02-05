@@ -656,6 +656,7 @@ sin = np.sin
 cos = np.cos
 exp = np.exp
 atan = np.arctan
+# atan = np.arctan2
 
 # parameters
 
@@ -672,49 +673,68 @@ def f_load(v, w):
     '''
     return 0
 
-# def exact_u(x, y):
-#     
 
 def exact_u(x, y):
-    out = np.zeros_like(x)
-    if x.ndim == 1:
-        for i in range(x.shape[0]):
-            if x[i] != 0:
-                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(5 * atan(y[i] / x[i]) / 3)
-            elif y[i] > 0:
-                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(90 * 5 / 3)
-            else:
-                out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(270 * 5 / 3)
-    else:
-        out = (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
-    return out
-
-def get_theta(x, y):
-    import math
-    import cmath
-    theta = np.zeros_like(x)
-    for i in range(x.shape[0]):
-        for j in range(x.shape[1]):
-            # print(x)
-            r, rad = cmath.polar(complex(x[i, j], y[i, j]))
-            theta[i, j] = math.degrees(rad)
-    return theta
+    theta = np.arctan2(y, x)
+    return (x**2 + y**2)**(5/6) * sin(5*theta/3)
 
 
 def dexact_u(x, y):
-    theta = get_theta(x, y)
+    theta = np.arctan2(y, x)
     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     return dux, duy
 
 
 def ddexact(x, y):
-    theta = get_theta(x, y)
+    theta = np.arctan2(y, x)
     duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) + 2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     duyx = duxy
     duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     return duxx, duxy, duyx, duyy
+
+
+# def exact_u(x, y):
+#     out = np.zeros_like(x)
+#     if x.ndim == 1:
+#         for i in range(x.shape[0]):
+#             if x[i] != 0:
+#                 out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(5 * atan(y[i] / x[i]) / 3)
+#             elif y[i] > 0:
+#                 out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(pi/2 * 5 / 3)
+#             else:
+#                 out[i] = (x[i]**2 + y[i]**2)**(5 / 6) * sin(3/2 * pi * 5 / 3)
+#     else:
+#         out = (x**2 + y**2)**(5/6) * sin(5*atan(y / x)/3)
+#     return out
+
+# def get_theta(x, y):
+#     import math
+#     import cmath
+#     theta = np.zeros_like(x)
+#     for i in range(x.shape[0]):
+#         for j in range(x.shape[1]):
+#             # print(x)
+#             r, rad = cmath.polar(complex(x[i, j], y[i, j]))
+#             theta[i, j] = math.degrees(rad)
+#     return theta
+
+
+# def dexact_u(x, y):
+#     theta = get_theta(x, y)
+#     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     return dux, duy
+
+
+# def ddexact(x, y):
+#     theta = get_theta(x, y)
+#     duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) + 2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     duyx = duxy
+#     duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     return duxx, duxy, duyx, duyy
 
 
 def easy_boundary_penalty(m, basis):
