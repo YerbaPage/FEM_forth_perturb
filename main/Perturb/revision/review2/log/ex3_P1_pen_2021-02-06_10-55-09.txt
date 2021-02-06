@@ -1,0 +1,29 @@
+=======Arguments=======
+penalty:	True
+element_type:	P1
+base_order:	7
+solver_type:	mgcg
+tol:	1e-08
+intorder:	3
+refine_time:	6
+epsilon:	1e-06
+sigma:	5
+=======Results=======
+Testing order:  1
+Testing order:  2
+Testing order:  3
+Testing order:  4
+Testing order:  5
+Testing order:  6
+  h    L2u   H1u   H2u   epu
+2^-2  2.19  1.46  0.54  1.37
+2^-2  4.890e-02  5.592e-01  6.673e+00  5.103e-01
+2^-3  2.39  1.67  0.66  1.62
+2^-3  9.340e-03  1.753e-01  4.233e+00  1.660e-01
+2^-4  2.28  1.69  0.67  1.66
+2^-4  1.925e-03  5.439e-02  2.657e+00  5.246e-02
+2^-5  2.20  1.69  0.69  1.67
+2^-5  4.195e-04  1.691e-02  1.645e+00  1.649e-02
+2^-6  2.37  1.83  0.84  1.82
+2^-6  8.104e-05  4.751e-03  9.199e-01  4.670e-03
+Total Time Cost 43285.58 s
