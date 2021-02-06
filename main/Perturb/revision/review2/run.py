@@ -15,7 +15,7 @@ from concurrent.futures import ProcessPoolExecutor
 tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
-refine_time = 7
+refine_time = 6
 base_order = 7
 element_type = 'P1'
 sigma = 5
@@ -77,7 +77,7 @@ def interpolator_parallel(j):
 
 if __name__ == '__main__':
         
-    for i in range(1, refine_time+1):
+    for i in range(6, 7):
 
         m = MeshTri()
         m.refine(i)

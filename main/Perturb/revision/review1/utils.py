@@ -673,21 +673,25 @@ def f_load(v, w):
     '''
     return 0
 
+def arctan3(x, y):
+    theta = np.arctan2(y, x)
+    theta[theta < 0] += 2 * pi
+    return theta
 
 def exact_u(x, y):
-    theta = np.arctan2(y, x)
+    theta = arctan3(y, x)
     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
 
 
 def dexact_u(x, y):
-    theta = np.arctan2(y, x)
+    theta = arctan3(y, x)
     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     return dux, duy
 
 
 def ddexact(x, y):
-    theta = np.arctan2(y, x)
+    theta = arctan3(y, x)
     duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) + 2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     duyx = duxy
