@@ -10,8 +10,6 @@ import sys
 import time
 from tqdm import tqdm
 
-from concurrent.futures import ProcessPoolExecutor
-
 tol = 1e-8
 intorder = 3 # 6
 solver_type = 'mgcg'
@@ -19,7 +17,7 @@ refine_time = 6
 base_order = 7
 element_type = 'P1'
 sigma = 5
-penalty = False
+penalty = True
 epsilon = 1e-6
 ep = epsilon
 example = 'ex3'
@@ -68,16 +66,16 @@ D2u_list = []
 h_list = []
 epu_list = []
 
-def interpolator_parallel(j):
-    # global base_test_basis
-    for i in tqdm(range(base_test_basis.shape[0])):
-        base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
-    # print(j, 'done')
-    return base_test_basis
+# def interpolator_parallel(j):
+#     # global base_test_basis
+#     for i in tqdm(range(base_test_basis.shape[0])):
+#         base_test_basis[i][j] = test_basis['u'].interpolator(test_uh0)(np.array([[coordinates[0][i][j]], [coordinates[1][i][j]]]))
+#     # print(j, 'done')
+#     return base_test_basis
 
 if __name__ == '__main__':
         
-    for i in range(6, 7):
+    for i in range(1, refine_time+1):
 
         m = MeshTri()
         m.refine(i)

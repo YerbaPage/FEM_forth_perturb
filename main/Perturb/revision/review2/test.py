@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
     # N = base_test_basis.shape[1]
 
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=1) as executor:
 
         # func = wrapped_interpolator(base_test_basis, test_basis, test_uh0, coordinates).interpolator_parallel
         # func = partial(interpolator_parallel, base_test_basis, test_basis, test_uh0, coordinates)
