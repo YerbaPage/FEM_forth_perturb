@@ -1,10 +1,16 @@
 """This module contains utility functions such as convenient access to
 SciPy linear solvers."""
 
+import sys
+from skfem.assembly import BilinearForm, LinearForm
+from skfem.models.poisson import *
+from scipy.sparse.linalg import LinearOperator, minres
+from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
+from skfem import *
 import warnings
 from typing import Optional, Union, Tuple, Callable, Dict
 from inspect import signature
-
+from skfem.visuals.matplotlib import draw, plot
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.csgraph as spg
@@ -83,6 +89,7 @@ def solver_direct_scipy(**kwargs) -> LinearSolver:
         return spl.spsolve(A, b, **kwargs)
     return solver
 
+
 def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Optional[bool] = False, **kwargs) -> LinearSolver:
     """MGCG iterative linear solver.
 
@@ -109,9 +116,9 @@ def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Opti
 
         import pyamg
         ml = pyamg.ruge_stuben_solver(A)
-        kwargs['M'] = ml.aspreconditioner() # params to be developed
-        
-        sol, info, iter= krylov(A, b, **{'callback': callback, **kwargs})
+        kwargs['M'] = ml.aspreconditioner()  # params to be developed
+
+        sol, info, iter = krylov(A, b, **{'callback': callback, **kwargs})
         print('mgcg total interation steps:', iter)
         if info > 0:
             warnings.warn("Convergence not achieved!")
@@ -123,9 +130,10 @@ def solver_iter_mgcg_iter(krylov: Optional[LinearSolver] = spl.cg, verbose: Opti
 
     return solver
 
+
 def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
-                       verbose: Optional[bool] = False,
-                       **kwargs) -> LinearSolver:
+                     verbose: Optional[bool] = False,
+                     **kwargs) -> LinearSolver:
     """MGCG iterative linear solver.
 
     Parameters
@@ -151,8 +159,8 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
 
         import pyamg
         ml = pyamg.ruge_stuben_solver(A)
-        kwargs['M'] = ml.aspreconditioner() # params to be developed
-        
+        kwargs['M'] = ml.aspreconditioner()  # params to be developed
+
         try:
             sol, info, _ = krylov(A, b, **{'callback': callback, **kwargs})
         except:
@@ -167,8 +175,9 @@ def solver_iter_mgcg(krylov: Optional[LinearSolver] = spl.cg,
 
     return solver
 
+
 def solver_iter_pyamg(verbose: Optional[bool] = False,
-                       **kwargs) -> LinearSolver:
+                      **kwargs) -> LinearSolver:
     """Pyamg iterative linear solver.
 
     Parameters
@@ -187,7 +196,7 @@ def solver_iter_pyamg(verbose: Optional[bool] = False,
         A solver function that can be passed to :func:`solve`.
 
     """
-    
+
     def my_pyamg(A, b, **kwargs):
         '''
         solver for pyamg
@@ -211,9 +220,10 @@ def solver_iter_pyamg(verbose: Optional[bool] = False,
 
     return solver
 
+
 def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
-                       verbose: Optional[bool] = False,
-                       **kwargs) -> LinearSolver:
+                            verbose: Optional[bool] = False,
+                            **kwargs) -> LinearSolver:
     """Krylov-subspace iterative linear solver.
 
     Parameters
@@ -263,6 +273,7 @@ def solver_iter_krylov_iter(krylov: Optional[LinearSolver] = spl.cg,
         return sol
 
     return solver
+
 
 def solver_iter_krylov(krylov: Optional[LinearSolver] = spl.cg,
                        verbose: Optional[bool] = False,
@@ -511,7 +522,6 @@ def project(fun,
 
     """
 
-
     @BilinearForm
     def mass(u, v, w):
         p = u * v
@@ -554,14 +564,14 @@ def project(fun,
             return solve(*condense(M, f, I=I, expand=expand), solver=solver_iter_krylov(solver, tol=1e-11))
     return solve(M, f)
 
-    
+
 def pproject(fun,
-            basis_from: Basis = None,
-            basis_to: Basis = None,
-            diff: int = None,
-            I: ndarray = None,
-            expand: bool = False,
-            solver: Optional[Union[LinearSolver, EigenSolver]] = None) -> ndarray:
+             basis_from: Basis = None,
+             basis_to: Basis = None,
+             diff: int = None,
+             I: ndarray = None,
+             expand: bool = False,
+             solver: Optional[Union[LinearSolver, EigenSolver]] = None) -> ndarray:
     """Projection from one basis to another.
 
     Parameters
@@ -585,7 +595,6 @@ def pproject(fun,
         The projected solution vector.
 
     """
-
 
     @BilinearForm
     def mass(u, v, w):
@@ -639,17 +648,7 @@ def derivative(a, b, c, d=0):
     return project(a, basis_from=b, basis_to=c, diff=d)
 
 
-
-
 # functions for loads and boundary
-
-from skfem import *
-import numpy as np
-from skfem.helpers import d, dd, ddd, dot, ddot, grad, dddot, prod
-from scipy.sparse.linalg import LinearOperator, minres
-from skfem.models.poisson import *
-from skfem.assembly import BilinearForm, LinearForm
-import sys
 
 pi = np.pi
 sin = np.sin
@@ -666,6 +665,7 @@ atan = np.arctan
 
 # functions
 
+
 @LinearForm
 def f_load(v, w):
     '''
@@ -673,10 +673,12 @@ def f_load(v, w):
     '''
     return 0
 
+
 def arctan3(x, y):
     theta = np.arctan2(y, x)
-    theta[theta < 0] += 2 * pi
+    theta[theta <= 0] += 2 * pi
     return theta
+
 
 def exact_u(x, y):
     theta = arctan3(y, x)
@@ -685,17 +687,29 @@ def exact_u(x, y):
 
 def dexact_u(x, y):
     theta = arctan3(y, x)
-    dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
-    duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - \
+        (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + \
+        (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
     return dux, duy
+
+
+# def exact_un(x, y):
+#     nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
+#     ny = -1 * (y == -1) + 1 * ((y == 1) + (y == 0) * (x > 0))
+#     dux, duy = dexact_u(x, y)
+#     return nx * dux + ny * duy
 
 
 def ddexact(x, y):
     theta = arctan3(y, x)
-    duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) + 2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+                 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) +
+                2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     duyx = duxy
-    duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) + 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+                2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
     return duxx, duxy, duyx, duyy
 
 
@@ -759,6 +773,7 @@ def easy_boundary_penalty(m, basis):
                         dofs['top'].nodal['u'], dofs['buttom'].nodal['u']))
     return D
 
+
 def easy_boundary(m, basis):
     '''
     Input basis
@@ -778,6 +793,7 @@ def easy_boundary(m, basis):
                         dofs['left'].facet['u_n'], dofs['right'].facet['u_n'],
                         dofs['top'].facet['u_n'], dofs['buttom'].facet['u_n']))
     return D
+
 
 def solve_problem1__(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6):
     '''
@@ -799,11 +815,14 @@ def solve_problem1__(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e
     f1 = asm(f_load, basis['w'])
 
     if solver_type == 'amg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
+        wh = solve(
+            *condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()),
+                   solver=solver_iter_krylov(Precondition=True, tol=tol))
     elif solver_type == 'mgcg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
+        wh = solve(
+            *condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
 
@@ -811,15 +830,19 @@ def solve_problem1__(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
 
     if solver_type == 'amg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary(m, basis['u'])), solver=solver_iter_pyamg(tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(m,
+                                                      basis['u'])), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary(m, basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(m,
+                                                      basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
     elif solver_type == 'mgcg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary(m, basis['u'])), solver=solver_iter_mgcg(tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary(m,
+                                                      basis['u'])), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
 
     return uh0, basis
+
 
 def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8, epsilon=1e-6):
     '''
@@ -841,11 +864,14 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     f1 = asm(f_load, basis['w'])
 
     if solver_type == 'amg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
+        wh = solve(
+            *condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_krylov(Precondition=True, tol=tol))
+        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()),
+                   solver=solver_iter_krylov(Precondition=True, tol=tol))
     elif solver_type == 'mgcg':
-        wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
+        wh = solve(
+            *condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
 
@@ -856,23 +882,29 @@ def solve_problem2(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     p3 = asm(penalty_3, fbasis)
     P = p1 + p2 + p3
 
-    K2 = epsilon**2 * asm(a_load, basis['u']) + epsilon**2 * P + asm(b_load, basis['u'])
+    K2 = epsilon**2 * asm(a_load, basis['u']) + \
+        epsilon**2 * P + asm(b_load, basis['u'])
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
 
     if solver_type == 'amg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m, basis['u'])), solver=solver_iter_pyamg(tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m,
+                                                              basis['u'])), solver=solver_iter_pyamg(tol=tol))
     elif solver_type == 'pcg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m, basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m,
+                                                              basis['u'])), solver=solver_iter_krylov(Precondition=True, tol=tol))
     elif solver_type == 'mgcg':
-        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m, basis['u'])), solver=solver_iter_mgcg(tol=tol))
+        uh0 = solve(*condense(K2, f2, D=easy_boundary_penalty(m,
+                                                              basis['u'])), solver=solver_iter_mgcg(tol=tol))
     else:
         raise Exception("Solver not supported")
-    
+
     return uh0, basis, fbasis
+
 
 @Functional
 def L2pnvError(w):
     return (w.h * dot(w['n'].value, w['w'].grad))**2
+
 
 @BilinearForm
 def a_load(u, v, w):
@@ -934,6 +966,7 @@ def get_DuError(basis, u):
     dux, duy = dexact_u(x[0], x[1])
     return np.sqrt(np.sum(((duh[0] - dux)**2 + (duh[1] - duy)**2) * dx))
 
+
 def get_D2uError(basis, u):
     dduh = basis.interpolate(u).hess
     x = basis.global_coordinates(
@@ -945,7 +978,6 @@ def get_D2uError(basis, u):
                 (dduh[1][1] - duyy)**2 + (dduh[1][0] - duyx)**2) * dx))
 
 
-
 # def exact_u(x, y):
 #     return (sin(pi * x) * sin(pi * y))**2
 
@@ -954,7 +986,6 @@ def get_D2uError(basis, u):
 #     dux = 2 * pi * cos(pi * x) * sin(pi * x) * sin(pi * y)**2
 #     duy = 2 * pi * cos(pi * y) * sin(pi * x)**2 * sin(pi * y)
 #     return dux, duy
-
 
 # def ddexact(x, y):
 #     duxx = 2 * pi**2 * cos(pi * x)**2 * sin(pi * y)**2 - 2 * pi**2 * sin(
