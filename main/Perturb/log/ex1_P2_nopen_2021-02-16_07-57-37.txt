@@ -1,0 +1,12 @@
+=======Arguments=======
+example:	ex1
+penalty:	False
+element_type:	P2
+solver_type:	mgcg
+tol:	1e-08
+intorder:	5
+refine_time:	7
+epsilon_range:	6
+sigma:	5
+save_path:	log/ex1_P2_nopen_2021-02-16_07-57-37
+=======Results=======
