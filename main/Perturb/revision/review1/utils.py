@@ -666,9 +666,6 @@ atan = np.arctan
 # functions
 
 
-
-
-
 def arctan3(x, y):
     theta = np.arctan2(y, x)
     theta[theta < 0] += 2 * pi
@@ -712,24 +709,21 @@ def f_load(v, w):
     '''
     for $(f, x_{h})$
     '''
-    return -2
+    x, y = w.x
+    return x
 
 
 def exact_u(x, y):
-    return x**2
+    return sin(x)
 
 
 def dexact_u(x, y):
-    dux = 2*x
+    dux = cos(x)
     duy = 0
     return dux, duy
 
-def ddexact(x, y):
-    duxx = 2
-    duxy = 0
-    duyx = 0
-    duyy = 0
-    return duxx, duxy, duyx, duyy
+
+
 
 # def exact_un(x, y):
 #     nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
@@ -738,7 +732,7 @@ def ddexact(x, y):
 #     return nx * dux + ny * duy
 
 
-
+# 
 
 
 # def exact_u(x, y):
