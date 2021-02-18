@@ -666,12 +666,7 @@ atan = np.arctan
 # functions
 
 
-@LinearForm
-def f_load(v, w):
-    '''
-    for $(f, x_{h})$
-    '''
-    return 0
+
 
 
 def arctan3(x, y):
@@ -680,19 +675,61 @@ def arctan3(x, y):
     return theta
 
 
+# def exact_u(x, y):
+#     theta = arctan3(y, x)
+#     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
+
+
+# def dexact_u(x, y):
+#     theta = arctan3(y, x)
+#     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - \
+#         (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + \
+#         (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     return dux, duy
+
+
+# def ddexact(x, y):
+#     theta = arctan3(y, x)
+#     duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+#                  2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) +
+#                 2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     duyx = duxy
+#     duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+#                 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+#     return duxx, duxy, duyx, duyy
+
+# @LinearForm
+# def f_load(v, w):
+#     '''
+#     for $(f, x_{h})$
+#     '''
+#     return 0
+
+@LinearForm
+def f_load(v, w):
+    '''
+    for $(f, x_{h})$
+    '''
+    return -2
+
+
 def exact_u(x, y):
-    theta = arctan3(y, x)
-    return (x**2 + y**2)**(5/6) * sin(5*theta/3)
+    return x**2
 
 
 def dexact_u(x, y):
-    theta = arctan3(y, x)
-    dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - \
-        (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
-    duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + \
-        (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    dux = 2*x
+    duy = 0
     return dux, duy
 
+def ddexact(x, y):
+    duxx = 2
+    duxy = 0
+    duyx = 0
+    duyy = 0
+    return duxx, duxy, duyx, duyy
 
 # def exact_un(x, y):
 #     nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
@@ -701,16 +738,7 @@ def dexact_u(x, y):
 #     return nx * dux + ny * duy
 
 
-def ddexact(x, y):
-    theta = arctan3(y, x)
-    duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
-                 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) +
-                2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    duyx = duxy
-    duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
-                2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    return duxx, duxy, duyx, duyy
+
 
 
 # def exact_u(x, y):
