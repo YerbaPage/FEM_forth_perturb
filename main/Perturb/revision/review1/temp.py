@@ -66,7 +66,6 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     uh0[boundary_dofs_u] = exact_u(boundary_basis.doflocs[0][boundary_dofs_u], boundary_basis.doflocs[1][boundary_dofs_u])
     uh0[boundary_dofs_un] = exact_un(boundary_basis.doflocs[0][boundary_dofs_un], boundary_basis.doflocs[1][boundary_dofs_un])
     uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs), solver=solver_iter_mgcg(tol=tol))
-    # uh0 = solve(*condense(K2, f2, D=easy_boundary(m, basis['u'])), solver=solver_iter_mgcg(tol=tol))
     return uh0, basis
 
 def exact_un(x, y):
@@ -79,6 +78,15 @@ def exact_un(x, y):
     # out[np.isnan(out)] = 0
     return out
 
+# # m = MeshTri().init_lshaped()
+# m = MeshTri()
+# # m = MeshTri().init_symmetric()
+# m.refine(4)
+# # draw(m)
+
+# epsilon = 0
+# ep = epsilon
+
 @LinearForm
 def f_load(v, w):
     '''
@@ -88,30 +96,88 @@ def f_load(v, w):
     # lu = 0
     # llu = 0
     # return (epsilon**2 * llu - lu) * v
-    return (24*ep**2*x**4 - 48*ep**2*x**3 + 288*ep**2*x**2*y**2 - 288*ep**2*x**2*y + 72*ep**2*x**2 - 288*ep**2*x*y**2 + 288*ep**2*x*y - 48*ep**2*x + 24*ep**2*y**4 - 48*ep**2*y**3 + 72*ep**2*y**2 - 48*ep**2*y + 8*ep**2 - 12*x**4*y**2 + 12*x**4*y - 2*x**4 + 24*x**3*y**2 - 24*x**3*y + 4*x**3 - 12*x**2*y**4 + 24*x**2*y**3 - 24*x**2*y**2 + 12*x**2*y - 2*x**2 + 12*x*y**4 - 24*x*y**3 + 12*x*y**2 - 2*y**4 + 4*y**3 - 2*y**2) * v
+    return ((24*x**2*(x - 1)**2 + 24*y**2*(y - 1)**2 + 2*(4*x*(2*x - 2) + 2*(x - 1)**2 + 2*x**2)*(4*y*(2*y - 2) + 2*(y - 1)**2 + 2*y**2) + 72)*ep**2 - (y**2*(y - 1)**2 + 2)*(4*x*(2*x - 2) + 2*(x - 1)**2 + 2*x**2) - (x**2*(x - 1)**2 + 1)*(4*y*(2*y - 2) + 2*(y - 1)**2 + 2*y**2)) * v
 
-def exact_u(x, y):
-    return x**2*y**2*(x - 1)**2*(y - 1)**2
+# uh0, basis = solve_problem1(m, element_type, solver_type, intorder, tol, epsilon)
 
-def dexact_u(x, y):
-    dux = 2*x*y**2*(y - 1)**2*(2*x**2 - 3*x + 1)
-    duy = 2*x**2*y*(x - 1)**2*(2*y**2 - 3*y + 1)
-    return dux, duy
+# x = basis['u'].doflocs[0]
+# y = basis['u'].doflocs[1]
+# u = exact_u(x, y)
+# plot(basis['u'], u-uh0, colorbar=True)
+# # # plot(basis['u'], u, colorbar=True)
+# show()
+sssolve = True
 
-# m = MeshTri().init_lshaped()
-m = MeshTri()
-# m = MeshTri().init_symmetric()
-m.refine(4)
-# draw(m)
+if sssolve:
+    time_start = time.time()
 
-epsilon = 0
-ep = epsilon
+    print('=======Arguments=======')
+    print('penalty:\t{}'.format(penalty))
+    print('element_type:\t{}'.format(element_type))
+    print('solver_type:\t{}'.format(solver_type))
+    print('tol:\t{}'.format(tol))
+    print('intorder:\t{}'.format(intorder))
+    print('refine_time:\t{}'.format(refine_time))
+    print('sigma:\t{}'.format(sigma))
+    print('=======Results=======')
 
-uh0, basis = solve_problem1(m, element_type, solver_type, intorder, tol, epsilon)
+    df_list = []
+    for j in range(epsilon_range):
+        epsilon = 1 * 10**(-j)
+        ep = epsilon
+        L2_list = []
+        Du_list = []
+        D2u_list = []
+        h_list = []
+        epu_list = []
+    #     m = MeshTri().init_lshaped()
+        m = MeshTri()
+    #     draw(m)
 
-x = basis['u'].doflocs[0]
-y = basis['u'].doflocs[1]
-u = exact_u(x, y)
-plot(basis['u'], u-uh0, colorbar=True)
-# plot(basis['u'], u, colorbar=True)
-show()
+        for i in range(1, refine_time+1):
+            
+            m.refine()
+            
+
+            uh0, basis = solve_problem1(m, element_type, solver_type, intorder, tol, epsilon)
+
+            U = basis['u'].interpolate(uh0).value
+
+            # compute errors
+
+            L2u = np.sqrt(L2uError.assemble(basis['u'], w=U))
+            Du = get_DuError(basis['u'], uh0)
+            H1u = Du + L2u
+            if penalty:
+                D2u = np.sqrt(get_D2uError(basis['u'], uh0)**2 + L2pnvError.assemble(fbasis, w=fbasis.interpolate(uh0)))
+            else:
+                D2u = get_D2uError(basis['u'], uh0)
+            epu = np.sqrt(epsilon**2 * D2u**2 + Du**2)
+            h_list.append(m.param())
+            Du_list.append(Du)
+            L2_list.append(L2u)
+            D2u_list.append(D2u)
+            epu_list.append(epu)
+            
+        hs = np.array(h_list)
+        L2s = np.array(L2_list)
+        Dus = np.array(Du_list)
+        D2us = np.array(D2u_list)
+        epus = np.array(epu_list)
+        H1s = L2s + Dus
+        H2s = H1s + D2us
+        
+        # store data
+        data = np.array([L2s, H1s, H2s, epus])
+        df = pd.DataFrame(data.T, columns=['L2', 'H1', 'H2', 'Energy'])
+        df_list.append(df)
+        
+        print('epsilion:', epsilon)
+        show_result(L2s, H1s, H2s, epus)
+
+    time_end = time.time()
+
+    result = df_list[0].append(df_list[1:])
+    # result.to_csv(save_path+'.csv')
+    print('======= Errors saved in:', save_path+'.csv ==========')
+    print('Total Time Cost {:.2f} s'.format(time_end-time_start))
