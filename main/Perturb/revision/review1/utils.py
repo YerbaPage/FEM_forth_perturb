@@ -671,7 +671,7 @@ def arctan3(x, y):
     theta[theta < 0] += 2 * pi
     return theta
 
-
+#############################
 # def exact_u(x, y):
 #     theta = arctan3(y, x)
 #     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
@@ -703,36 +703,32 @@ def arctan3(x, y):
 #     for $(f, x_{h})$
 #     '''
 #     return 0
-
-@LinearForm
-def f_load(v, w):
-    '''
-    for $(f, x_{h})$
-    '''
-    x, y = w.x
-    return x
-
-
-def exact_u(x, y):
-    return sin(x)
-
-
-def dexact_u(x, y):
-    dux = cos(x)
-    duy = 0
-    return dux, duy
+########################################
 
 
 
+# @LinearForm
+# def f_load(v, w):
+#     '''
+#     for $(f, x_{h})$
+#     '''
+#     lu = 
+#     llu = 
+#     return (epsilon**2 * llu - lu) * v
 
-# def exact_un(x, y):
-#     nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
-#     ny = -1 * (y == -1) + 1 * ((y == 1) + (y == 0) * (x > 0))
-#     dux, duy = dexact_u(x, y)
-#     return nx * dux + ny * duy
+# def exact_u(x, y):
+#     theta = arctan3(y, x)
+#     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
+
+# def dexact_u(x, y):
+#     theta = arctan3(y, x)
+#     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - \
+#         (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + \
+#         (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     return dux, duy
 
 
-# 
 
 
 # def exact_u(x, y):
