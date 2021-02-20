@@ -706,27 +706,29 @@ def arctan3(x, y):
 ########################################
 
 
-
 # @LinearForm
 # def f_load(v, w):
 #     '''
 #     for $(f, x_{h})$
 #     '''
-#     lu = 
-#     llu = 
+#     lu = 0
+#     llu = 0
 #     return (epsilon**2 * llu - lu) * v
 
 # def exact_u(x, y):
-#     theta = arctan3(y, x)
-#     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
+#     return x*y
 
 # def dexact_u(x, y):
-#     theta = arctan3(y, x)
-#     dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - \
-#         (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
-#     duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + \
-#         (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+#     dux = y
+#     duy = x
 #     return dux, duy
+
+# def ddexact(x, y):
+#     duxx = 0
+#     duxy = 1
+#     duyx = duxy
+#     duyy = 0
+#     return duxx, duxy, duyx, duyy
 
 ###################################x**2*y**2*(x - 1)**2*(y - 1)**2
 # @LinearForm
@@ -740,23 +742,23 @@ def arctan3(x, y):
 #     # return (epsilon**2 * llu - lu) * v
 #     return (24*ep**2*x**4 - 48*ep**2*x**3 + 288*ep**2*x**2*y**2 - 288*ep**2*x**2*y + 72*ep**2*x**2 - 288*ep**2*x*y**2 + 288*ep**2*x*y - 48*ep**2*x + 24*ep**2*y**4 - 48*ep**2*y**3 + 72*ep**2*y**2 - 48*ep**2*y + 8*ep**2 - 12*x**4*y**2 + 12*x**4*y - 2*x**4 + 24*x**3*y**2 - 24*x**3*y + 4*x**3 - 12*x**2*y**4 + 24*x**2*y**3 - 24*x**2*y**2 + 12*x**2*y - 2*x**2 + 12*x*y**4 - 24*x*y**3 + 12*x*y**2 - 2*y**4 + 4*y**3 - 2*y**2) * v
 
-# def exact_u(x, y):
-#     return x**2*y**2*(x - 1)**2*(y - 1)**2
+def exact_u(x, y):
+    return x**2*y**2*(x - 1)**2*(y - 1)**2
 
-# def dexact_u(x, y):
-#     dux = 2*x*y**2*(y - 1)**2*(2*x**2 - 3*x + 1)
-#     duy = 2*x**2*y*(x - 1)**2*(2*y**2 - 3*y + 1)
-#     return dux, duy
+def dexact_u(x, y):
+    dux = 2*x*y**2*(y - 1)**2*(2*x**2 - 3*x + 1)
+    duy = 2*x**2*y*(x - 1)**2*(2*y**2 - 3*y + 1)
+    return dux, duy
 
-# def ddexact(x, y):
-#     duxx = 2*y**2*(y - 1)**2*(6*x**2 - 6*x + 1)
-#     duxy = 4*x*y*(2*x**2 - 3*x + 1)*(2*y**2 - 3*y + 1)
-#     duyx = duxy
-#     duyy = 2*x**2*(x - 1)**2*(6*y**2 - 6*y + 1)
-#     return duxx, duxy, duyx, duyy
+def ddexact(x, y):
+    duxx = 2*y**2*(y - 1)**2*(6*x**2 - 6*x + 1)
+    duxy = 4*x*y*(2*x**2 - 3*x + 1)*(2*y**2 - 3*y + 1)
+    duyx = duxy
+    duyy = 2*x**2*(x - 1)**2*(6*y**2 - 6*y + 1)
+    return duxx, duxy, duyx, duyy
 ###################################
 
-# ###################################
+###################################x*y*(x - 1)*(y - 1)
 # @LinearForm
 # def f_load(v, w):
 #     '''
@@ -804,12 +806,12 @@ def arctan3(x, y):
 #     duy = (x**2*(x - 1)**2 + 1)*(2*y*(y - 1)**2 + y**2*(2*y - 2))
 #     return dux, duy
 
-def ddexact(x, y):
-    duxx = (12*x**2 - 12*x + 2)*(y**4 - 2*y**3 + y**2 + 2)
-    duxy = 4*x*y*(2*x**2 - 3*x + 1)*(2*y**2 - 3*y + 1)
-    duyx = duxy
-    duyy = (12*y**2 - 12*y + 2)*(x**4 - 2*x**3 + x**2 + 1)
-    return duxx, duxy, duyx, duyy
+# def ddexact(x, y):
+#     duxx = (12*x**2 - 12*x + 2)*(y**4 - 2*y**3 + y**2 + 2)
+#     duxy = 4*x*y*(2*x**2 - 3*x + 1)*(2*y**2 - 3*y + 1)
+#     duyx = duxy
+#     duyy = (12*y**2 - 12*y + 2)*(x**4 - 2*x**3 + x**2 + 1)
+#     return duxx, duxy, duyx, duyy
 ###################################
 
 
