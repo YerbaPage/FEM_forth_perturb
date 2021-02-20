@@ -50,6 +50,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     boundary_dofs = basis['w'].find_dofs()['all'].all()
     wh[boundary_dofs] = exact_u(basis['w'].doflocs[0][boundary_dofs], basis['w'].doflocs[1][boundary_dofs]) 
     wh = solve(*condense(K1, f1, wh, D=boundary_dofs), solver=solver_iter_mgcg(tol=tol))
+
     # wh = solve(*condense(K1, f1, D=basis['w'].find_dofs()), solver=solver_iter_mgcg(tol=tol))
     
     # K2 = asm(b_load, basis['u'])
@@ -69,7 +70,7 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     uh0[boundary_dofs_u] = exact_u(basis['u'].doflocs[0][boundary_dofs_u], basis['u'].doflocs[1][boundary_dofs_u])
     # print(uh0[boundary_dofs_u])
     uh0[boundary_dofs_un] = exact_un(basis['u'].doflocs[0][boundary_dofs_un], basis['u'].doflocs[1][boundary_dofs_un])
-    uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs_u), solver=solver_iter_mgcg(tol=tol))
+    uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs), solver=solver_iter_mgcg(tol=tol))
     return uh0, basis
 
 def exact_un(x, y):
