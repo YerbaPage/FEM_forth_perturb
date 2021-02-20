@@ -63,9 +63,9 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
 
     uh0 = np.zeros(basis['u'].N)
     uh0[boundary_dofs_u] = exact_u(basis['u'].doflocs[0][boundary_dofs_u], basis['u'].doflocs[1][boundary_dofs_u])
-    # uh0[boundary_dofs_un] = exact_un(basis['u'].doflocs[0][boundary_dofs_un], basis['u'].doflocs[1][boundary_dofs_un])
+    uh0[boundary_dofs_un] = exact_un(basis['u'].doflocs[0][boundary_dofs_un], basis['u'].doflocs[1][boundary_dofs_un])
 
-    uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs_u), solver=solver_iter_mgcg(tol=tol))
+    uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs), solver=solver_iter_mgcg(tol=tol))
     return uh0, basis
 
 
@@ -75,6 +75,8 @@ def exact_un(x, y):
     nx = -1 * (x == 0) + 1 * (x == 1)
     ny = -1 * (y == 0) + 1 * (y == 1)
     dux, duy = dexact_u(x, y)
+    print(dux)
+    print(duy)
     out = nx * dux + ny * duy
     # out[np.isnan(out)] = 0
     return out
@@ -96,7 +98,7 @@ def f_load(v, w):
 # m = MeshTri().init_lshaped()
 m = MeshTri()
 # m = MeshTri().init_symmetric()
-m.refine(4)
+m.refine(1)
 # draw(m)
 
 epsilon = 0
@@ -111,7 +113,7 @@ plot(basis['u'], u-uh0, colorbar=True)
 # # plot(basis['u'], u, colorbar=True)
 
 
-sssolve = True
+sssolve = False
 
 if sssolve:
     time_start = time.time()
@@ -187,4 +189,4 @@ if sssolve:
     print('======= Errors saved in:', save_path+'.csv ==========')
     print('Total Time Cost {:.2f} s'.format(time_end-time_start))
 
-show()
+# show()
