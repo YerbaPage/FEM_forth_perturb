@@ -9,7 +9,7 @@ from skfem.visuals.matplotlib import draw, plot, show
 import sys
 import time
 
-tol = 1e-8
+tol = 1e-12
 intorder = 8
 solver_type = 'mgcg'
 refine_time = 7
