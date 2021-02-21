@@ -12,9 +12,9 @@ import time
 tol = 1e-8
 intorder = 5
 solver_type = 'mgcg'
-refine_time = 6
+refine_time = 5
 epsilon_range = 6
-element_type = 'P2'
+element_type = 'P1'
 sigma = 5
 penalty = False
 # epsilon = 1e-5
@@ -61,8 +61,8 @@ def f_load(v, w):
     llu = 0
     return (epsilon**2 * llu - lu) * v
 
-# m = MeshTri().init_lshaped()
-m = MeshTri()
+m = MeshTri().init_lshaped()
+# m = MeshTri()
 # m = MeshTri().init_symmetric()
 m.refine(5)
 
@@ -101,8 +101,8 @@ if sssolve:
         D2u_list = []
         h_list = []
         epu_list = []
-        # m = MeshTri().init_lshaped()
-        m = MeshTri()
+        m = MeshTri().init_lshaped()
+        # m = MeshTri()
     #     draw(m)
 
         for i in range(1, refine_time+1):
