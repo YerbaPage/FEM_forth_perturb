@@ -36,7 +36,6 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
         variable: InteriorBasis(m, e, intorder=intorder)
         for variable, e in element.items()
     }
-    global K2, f2, uh0, boundary_dofs, boundary_basis, boundary_dofs_un
     
     K1 = asm(laplace, basis['w'])
     f1 = asm(f_load, basis['w'])
@@ -49,34 +48,9 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
     f2 = asm(wv_load, basis['w'], basis['u']) * wh
     boundary_dofs = basis['u'].find_dofs()['all'].all()
 
-    # boundary_dofs_u = np.array([i for i in boundary_dofs if i in basis['u'].nodal_dofs[0]])
-    # boundary_dofs_un = np.array([i for i in boundary_dofs if i in basis['u'].facet_dofs[0]])
-
-    # uh0 = np.zeros(basis['u'].N)
-    # uh0[boundary_dofs_u] = exact_u(basis['u'].doflocs[0][boundary_dofs_u], basis['u'].doflocs[1][boundary_dofs_u])
-    # uh0[boundary_dofs_un] = exact_un(basis['u'].doflocs[0][boundary_dofs_un], basis['u'].doflocs[1][boundary_dofs_un])
-    # # print(easy_boundary(m, basis['u']))
-    # # print(easy_boundary_penalty(m, basis['u']))
-
     uh0 = project(exact_u, basis_to=basis['u'])
     uh0 = solve(*condense(K2, f2, uh0, D=boundary_dofs), solver=solver_iter_mgcg(tol=tol))
     return uh0, basis
-
-
-def exact_un(x, y):
-    nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
-    ny = -1 * (y == -1) + 1 * ((y == 1) + (y == 0) * (x > 0))
-    # nx = -1 * (x == 0) + 1 * (x == 1)
-    # ny = -1 * (y == 0) + 1 * (y == 1)
-    dux, duy = dexact_u(x, y)
-    # print(nx)
-    # print(ny)
-    # print(dux)
-    # print(duy)
-    out = nx * dux + ny * duy
-    return out
-
-#####################################
 
 @LinearForm
 def f_load(v, w):
@@ -87,13 +61,11 @@ def f_load(v, w):
     llu = 0
     return (epsilon**2 * llu - lu) * v
 
-#####################################
 
 m = MeshTri().init_lshaped()
 # m = MeshTri()
 # m = MeshTri().init_symmetric()
 m.refine(5)
-# draw(m)
 
 epsilon = 1
 ep = epsilon
@@ -104,7 +76,6 @@ x = basis['u'].doflocs[0]
 y = basis['u'].doflocs[1]
 u = exact_u(x, y)
 plot(basis['u'], u-uh0, colorbar=True)
-# # plot(basis['u'], u, colorbar=True)
 
 
 sssolve = True
