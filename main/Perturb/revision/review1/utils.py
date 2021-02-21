@@ -654,7 +654,6 @@ pi = np.pi
 sin = np.sin
 cos = np.cos
 exp = np.exp
-atan = np.arctan
 # atan = np.arctan2
 
 # parameters
@@ -668,7 +667,7 @@ atan = np.arctan
 
 def arctan3(x, y):
     theta = np.arctan2(y, x)
-    theta[theta < 0] += 2 * pi
+    theta[theta <= 0] += 2 * pi
     return theta
 
 #############################
@@ -730,7 +729,7 @@ def ddexact(x, y):
 #     duyy = 0
 #     return duxx, duxy, duyx, duyy
 
-###################################x**2*y**2*(x - 1)**2*(y - 1)**2
+# ###################################x**2*y**2*(x - 1)**2*(y - 1)**2
 # @LinearForm
 # def f_load(v, w):
 #     '''

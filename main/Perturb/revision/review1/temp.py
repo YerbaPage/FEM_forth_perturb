@@ -64,22 +64,19 @@ def solve_problem1(m, element_type='P1', solver_type='pcg', intorder=6, tol=1e-8
 
 
 def exact_un(x, y):
-    # nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
-    # ny = -1 * (y == -1) + 1 * ((y == 1) + (y == 0) * (x > 0))
-    nx = -1 * (x == 0) + 1 * (x == 1)
-    ny = -1 * (y == 0) + 1 * (y == 1)
+    nx = -1 * (x == -1) + 1 * ((x == 1) + (x == 0) * (y > 0))
+    ny = -1 * (y == -1) + 1 * ((y == 1) + (y == 0) * (x > 0))
+    # nx = -1 * (x == 0) + 1 * (x == 1)
+    # ny = -1 * (y == 0) + 1 * (y == 1)
     dux, duy = dexact_u(x, y)
     # print(nx)
     # print(ny)
     # print(dux)
     # print(duy)
     out = nx * dux + ny * duy
-    # print(out)
-    # out[np.isnan(out)] = 0
     return out
 
 #####################################
-
 
 @LinearForm
 def f_load(v, w):
@@ -92,8 +89,8 @@ def f_load(v, w):
 
 #####################################
 
-# m = MeshTri().init_lshaped()
-m = MeshTri()
+m = MeshTri().init_lshaped()
+# m = MeshTri()
 # m = MeshTri().init_symmetric()
 m.refine(5)
 # draw(m)
@@ -134,8 +131,8 @@ if sssolve:
         D2u_list = []
         h_list = []
         epu_list = []
-    #     m = MeshTri().init_lshaped()
-        m = MeshTri()
+        m = MeshTri().init_lshaped()
+        # m = MeshTri()
     #     draw(m)
 
         for i in range(1, refine_time+1):
