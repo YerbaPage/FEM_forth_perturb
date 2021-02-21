@@ -10,7 +10,7 @@ import sys
 import time
 
 tol = 1e-8
-intorder = 5
+intorder = 8
 solver_type = 'mgcg'
 refine_time = 5
 epsilon_range = 6
@@ -152,4 +152,4 @@ if sssolve:
     print('======= Errors saved in:', save_path+'.csv ==========')
     print('Total Time Cost {:.2f} s'.format(time_end-time_start))
 
-show()
+# show()
