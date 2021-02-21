@@ -12,7 +12,7 @@ import time
 tol = 1e-8
 intorder = 8
 solver_type = 'mgcg'
-refine_time = 5
+refine_time = 6
 epsilon_range = 6
 element_type = 'P1'
 sigma = 5

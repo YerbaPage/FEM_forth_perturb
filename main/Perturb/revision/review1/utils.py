@@ -665,39 +665,38 @@ exp = np.exp
 # functions
 
 
-def arctan3(x, y):
+def arctan3(y, x):
     theta = np.arctan2(y, x)
     theta[theta <= 0] += 2 * pi
     return theta
 
 #############################
-eps = 1e-8
+# eps = 1e-12
 def exact_u(x, y):
     theta = arctan3(y, x)
     return (x**2 + y**2)**(5/6) * sin(5*theta/3)
 
 def dexact_u(x, y):
-    # theta = arctan3(y, x)
-    # dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
-    # duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
-    dux = (exact_u(x+eps, y) - exact_u(x, y)) / eps
-    duy = (exact_u(x, y+eps) - exact_u(x, y)) / eps
+    theta = arctan3(y, x)
+    dux = (5*x*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) - (5*y*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    duy = (5*y*sin((5*theta)/3))/(3*(x**2 + y**2)**(1/6)) + (5*x*cos((5*theta)/3)*(x**2 + y**2)**(5/6))/(3*(y**2 + x**2))
+    # dux = (exact_u(x+eps/2, y) - exact_u(x-eps/2, y)) / eps
+    # duy = (exact_u(x, y+eps/2) - exact_u(x, y-eps/2)) / eps
     return dux, duy
-
-
+    
 def ddexact(x, y):
-    # theta = arctan3(y, x)
-    # duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
-    #              2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    # duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) +
-    #             2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    # duyx = duxy
-    # duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
-    #             2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
-    duxx = (dexact_u(x+eps, y)[0] - dexact_u(x, y)[0]) / eps
-    duxy = (dexact_u(x, y+eps)[0] - dexact_u(x, y)[0]) / eps
-    duyx = (dexact_u(x+eps, y)[1] - dexact_u(x, y)[1]) / eps
-    duyy = (dexact_u(x, y+eps)[1] - dexact_u(x, y)[1]) / eps
+    theta = arctan3(y, x)
+    duxx = -(10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+                 2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    duxy = (10*(x**2*cos((5*theta)/3) - y**2*cos((5*theta)/3) +
+                2*x*y*sin((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    duyx = duxy
+    duyy = (10*(y**2*sin((5*theta)/3) - x**2*sin((5*theta)/3) +
+                2*x*y*cos((5*theta)/3)))/(9*(x**2 + y**2)**(7/6))
+    # duxx = (dexact_u(x+eps/2, y)[0] - dexact_u(x-eps/2, y)[0]) / eps
+    # duxy = (dexact_u(x, y+eps/2)[0] - dexact_u(x, y-eps/2)[0]) / eps
+    # duyx = (dexact_u(x+eps/2, y)[1] - dexact_u(x-eps/2, y)[1]) / eps
+    # duyy = (dexact_u(x, y+eps/2)[1] - dexact_u(x, y-eps/2)[1]) / eps
     return duxx, duxy, duyx, duyy
 
 # @LinearForm
