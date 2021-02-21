@@ -667,7 +667,7 @@ exp = np.exp
 
 def arctan3(x, y):
     theta = np.arctan2(y, x)
-    theta[theta <= 0] += 2 * pi
+    theta[theta < 0] += 2 * pi
     return theta
 
 #############################
