@@ -9,11 +9,11 @@ from skfem.visuals.matplotlib import draw, plot, show
 import sys
 import time
 
-tol = 1e-12
+tol = 1e-11
 intorder = 8
 solver_type = 'mgcg'
 refine_time = 7
-epsilon_range = 6
+epsilon_range = 7
 element_type = 'P1'
 sigma = 5
 penalty = False
@@ -105,8 +105,9 @@ print('sigma:\t{}'.format(sigma))
 print('=======Results=======')
 
 df_list = []
-for j in range(epsilon_range):
-    epsilon = 1 * 10**(-j)
+for j in [1, 1e-5]:
+    # epsilon = 1 * 10**(-j)
+    epsilon = j
     ep = epsilon
     L2_list = []
     Du_list = []
