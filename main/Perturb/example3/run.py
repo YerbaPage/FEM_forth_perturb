@@ -12,7 +12,7 @@ import time
 tol = 1e-11
 intorder = 8
 solver_type = 'mgcg'
-refine_time = 7
+refine_time = 6
 epsilon_range = 7
 element_type = 'P1'
 sigma = 5
@@ -105,7 +105,7 @@ print('sigma:\t{}'.format(sigma))
 print('=======Results=======')
 
 df_list = []
-for j in [1, 1e-5]:
+for j in [1e-5, 1e-6]:
     # epsilon = 1 * 10**(-j)
     epsilon = j
     ep = epsilon
