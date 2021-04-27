@@ -13,8 +13,8 @@ Codes for paper: **A Morley-Wang-Xu element method for a fourth order elliptic s
 
 Some changes are necessary in @scipy and @skfem to reproduce the experiments:
 
-- return num of iters in scipy solvers
-- built in mgcg solver (you can install from https://github.com/YerbaPage/scikit-fem)
+- return num of iters in scipy solvers (cg and gmres)
+- wrapped mgcg solver (you can install from https://github.com/YerbaPage/scikit-fem)
 
 Much thanks to packages : @ifem @skfem @pyamg
 
