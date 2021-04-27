@@ -9,9 +9,15 @@ Codes for paper: **A Morley-Wang-Xu element method for a fourth order elliptic s
 - `run.py` in each folder contains main codes for each example 
 - `derivatives.ipynb` contains matlab codes used for computing derivatives to define different solution `u` for different examples
 
-### Reminder:
+### Requirements:
 
-Some changes are necessary in @scipy and @skfem to reproduce the experiments:
+- numpy == 1.18.1
+- scipy == 1.4.1
+- matplotlib == 3.1.1
+- scikit-fem == 2.1.1
+- pyamg == 4.0.0
+
+Some changes are necessary in `scipy` and `skfem` to reproduce the experiments:
 
 - return num of iters in scipy solvers (cg and gmres)
 - wrapped mgcg solver (you can install from https://github.com/YerbaPage/scikit-fem)
