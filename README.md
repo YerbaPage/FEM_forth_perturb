@@ -1,6 +1,6 @@
 # Finite element method
 
-### Desc:
+### Description:
 
 Codes for paper: **A Morley-Wang-Xu element method for a fourth order elliptic singular perturbation problem** https://arxiv.org/abs/2011.14064 
 
