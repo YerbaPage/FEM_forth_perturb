@@ -2,7 +2,7 @@
 
 ### Description:
 
-Codes for paper: **A Morley-Wang-Xu element method for a fourth order elliptic singular perturbation problem** https://arxiv.org/abs/2011.14064 
+Codes for paper: **A Morley-Wang-Xu element method for a fourth order elliptic singular perturbation problem** https://link.springer.com/article/10.1007/s10915-021-01483-2
 
 ### Files:
 
